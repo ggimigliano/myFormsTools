@@ -1,5 +1,6 @@
 <?
-
+use Gimi\myformstools;
+ 
 class myGlobalizer {
 static $working=false;
 protected static $dir,$ns;
