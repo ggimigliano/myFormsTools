@@ -5,12 +5,11 @@
 
 namespace Gimi\myFormsTools;
  
-class myGlobalizer {
+abstract class myGlobalizer {
 static $working=false;
 protected static $dir,$ns;
  
- public function __construct($ns,$dir=null){
-   
+ public static function start($ns,$dir=null){
     if(!self::$working) {spl_autoload_register(__NAMESPACE__.'\\myGlobalizer::finder');
                          if (is_callable('__autoload')) spl_autoload_register('__autoload');
                          self::$ns=$ns;
