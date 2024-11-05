@@ -1,14 +1,1 @@
-{
-	"name" : "gimi/myformstools",
-	"type" : "library",
-	"autoload" : {
-		"psr-4" : {
-			"Gimi\\myFormsTools" : ""
-		}
-	},
-	"authors" : [{
-			"name" : "Gimigliano",
-			"email" : "gimigliano@tin.it"
-		}
-	]
-}
+
