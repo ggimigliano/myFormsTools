@@ -1,6 +1,6 @@
 <?
 /**
- * Contains Gimi\myFormsTools\myGlobalizer
+ * Contains Gimi\myFormsTools\myGlobalizer.
  */
 
 namespace Gimi\myFormsTools;
