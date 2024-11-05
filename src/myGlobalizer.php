@@ -47,7 +47,7 @@ protected static function match_class_name($carry,$file){
             { 
               foreach (glob(__DIR__."/*.php") as $file)  $percorsi[]=$file;
               foreach (glob(__DIR__."/Pck*") as $path )
-                  foreach(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST) as $name => $object)
+                  foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST) as $name => $object)
                          if(strpos($name,'.php')!==false)  $percorsi[]=$name;
               $object;
               if($path_percorsi) @file_put_contents($path_percorsi, "<?php return ".var_export($percorsi,1).'; ?>',LOCK_EX);
@@ -58,7 +58,7 @@ protected static function match_class_name($carry,$file){
         if($found=self::get_completa_class_name($file,$class)) 
               {
                  class_exists($found[1],true);
-                 $refl = new ReflectionClass($found[1]);
+                 $refl = new \ReflectionClass($found[1]);
                  if($refl->isAbstract()) $abstract="abstract";
                  if($refl->isFinal())    $final="final";
                  if(!$filename)  eval ("$final $abstract class $class extends {$found[1]}{};");
