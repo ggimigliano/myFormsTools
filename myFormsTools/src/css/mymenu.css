@@ -1,0 +1,39 @@
+#menu {BACKGROUND: $sfondo_menu; width:100%; float:left;}
+
+
+#menu UL, #menu LI {PADDING:0;  MARGIN: 0px;min-width:1em;width:auto;LIST-STYLE-TYPE: none; $una_riga}
+#menu UL {FLOAT: left}
+
+#menu A,#menu DIV {
+			 PADDING-RIGHT: 3px; PADDING-TOP: 2px; PADDING-LEFT: 3px; PADDING-BOTTOM: 2px; 
+			 BORDER-TOP: #ccc 1px solid; BORDER-RIGHT: #888 1px solid; BORDER-LEFT: #bbb 1px solid; BORDER-BOTTOM: #555 1px solid;
+			 DISPLAY: block; 
+			 MARGIN: 0px;
+			 }
+
+#menu A,#menu DIV,#menu $h {BACKGROUND: $sfondo_menu; COLOR: $colore_menu; TEXT-DECORATION: none;DISPLAY: block;}
+#menu A:hover,#menu DIV:hover,#menu $h:hover {BACKGROUND: $sfondo_selezione_menu; COLOR: $colore_selezione_menu}
+
+
+#menu ul A,#menu ul DIV {BACKGROUND: $sfondo_sottomenu; COLOR: $colore_sottomenu; TEXT-DECORATION: none}
+#menu ul A:hover,#menu ul DIV:hover {BACKGROUND: $sfondo_selezione_sottomenu; COLOR: $colore_selezione_sottomenu}
+
+#menu LI {POSITION: relative;left:0em;LIST-STYLE-TYPE: none}
+#menu LI LI {POSITION: relative;left:0em}
+#menu UL UL {Z-INDEX: 500; POSITION: absolute}
+#menu UL UL UL {LEFT: 100%; POSITION: absolute; TOP: 0px}
+
+DIV#menu UL UL {DISPLAY: none}
+DIV#menu UL LI:hover UL UL {DISPLAY: none}
+DIV#menu UL UL LI:hover UL UL {DISPLAY: none}
+DIV#menu UL UL UL LI:hover UL UL {DISPLAY: none}
+DIV#menu UL UL UL UL LI:hover UL UL {DISPLAY: none}
+
+DIV#menu UL LI:hover UL {DISPLAY: block}
+DIV#menu UL UL LI:hover UL {DISPLAY: block}
+DIV#menu UL UL UL LI:hover UL {DISPLAY: block}
+DIV#menu UL UL UL UL LI:hover UL {DISPLAY: block}
+DIV#menu UL UL UL UL UL LI:hover UL {DISPLAY: block}
+
+
+

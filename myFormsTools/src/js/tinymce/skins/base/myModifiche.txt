@@ -1,0 +1,2 @@
+Identico a lightgray ma in 
+.mce-window-head{height-min:20px} altrimenti non si chiude popup scelta immagini

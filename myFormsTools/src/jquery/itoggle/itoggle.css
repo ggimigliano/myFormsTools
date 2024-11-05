@@ -1,0 +1,7 @@
+.itoggle{
+	background-image: url(immagini/iphone_switch.png);
+	background-repeat:no-repeat;
+	cursor:pointer;
+	width:94px;
+	height:27px;
+}

@@ -1,0 +1,15 @@
+{
+	"name" : "gimi/myFormsTools",
+	"type" : "library",
+	"autoload" : {
+		"psr-4" : {
+			"Gimi\\myFormsTools\\" : "src/"
+		}
+	},
+	"authors" : [{
+			"name" : "Gimigliano",
+			"email" : "nomail@nomail.it"
+		}
+	],
+	"description" : "Tool per costruzione veloce di Form in php"
+}

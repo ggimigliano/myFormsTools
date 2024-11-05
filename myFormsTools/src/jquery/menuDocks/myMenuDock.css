@@ -1,0 +1,32 @@
+/*position and hide the menu initially...*/
+
+#menuDock {
+	position: relative;
+	bottom:0px; 
+	left:0px;
+	
+	width:100%; 
+	display:block;
+	
+
+}
+
+/*dock styling...*/
+/*...centre the dock...*/
+#menuDock div.jqDockWrap {margin: auto;}
+/*...set the cursor...*/
+#menuDock div.jqDock {cursor:pointer;}
+div.jqDockLabel {
+
+	font-style:italic; 
+	white-space:nowrap; 
+	color:white; 
+	cursor:pointer;
+	background-color: #264D74;
+	
+}
+#menuDock a {
+	display:block; 
+	color: White; 
+	text-decoration:none;
+}

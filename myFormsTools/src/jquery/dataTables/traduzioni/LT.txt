@@ -1,0 +1,17 @@
+{
+    "sProcessing":   "Apdorojama...",
+    "sLengthMenu":   "Rodyti _MENU_ ?rašus",
+    "sZeroRecords":  "?raš? nerasta",
+    "sInfo":         "Rodomi ?rašai nuo _START_ iki _END_ iš _TOTAL_ ?raš?",
+    "sInfoEmpty":    "Rodomi ?rašai nuo 0 iki 0 iš 0",
+    "sInfoFiltered": "(atrinkta iš _MAX_ ?raš?)",
+    "sInfoPostFix":  "",
+    "sSearch":       "Ieškoti:",
+    "sUrl":          "",
+    "oPaginate": {
+        "sFirst":    "Pirmas",
+        "sPrevious": "Ankstesnis",
+        "sNext":     "Tolimesnis",
+        "sLast":     "Paskutinis"
+    }
+}

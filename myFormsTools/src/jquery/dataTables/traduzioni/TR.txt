@@ -1,0 +1,17 @@
+{
+    "sProcessing":   "??leniyor...",
+    "sLengthMenu":   "Sayfada _MENU_ Kay?t Göster",
+    "sZeroRecords":  "E?le?en Kay?t Bulunmad?",
+    "sInfo":         "  _TOTAL_ Kay?ttan _START_ - _END_ Aras? Kay?tlar",
+    "sInfoEmpty":    "Kay?t Yok",
+    "sInfoFiltered": "( _MAX_ Kay?t ?çerisinden Bulunan)",
+    "sInfoPostFix":  "",
+    "sSearch":       "Bul:",
+    "sUrl":          "",
+    "oPaginate": {
+        "sFirst":    "?lk",
+        "sPrevious": "Önceki",
+        "sNext":     "Sonraki",
+        "sLast":     "Son"
+    }
+}
