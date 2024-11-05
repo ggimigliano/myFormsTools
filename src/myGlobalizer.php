@@ -1,5 +1,9 @@
 <?
-use Gimi\myformstools;
+/**
+ * Contains Gimi\myFormsTools\myGlobalizer
+ */
+
+namespace Gimi\myFormsTools;
  
 class myGlobalizer {
 static $working=false;
