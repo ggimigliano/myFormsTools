@@ -1,15 +1,24 @@
 {
-	"name" : "gimi/myFormsTools",
-	"type" : "library",
-	"autoload" : {
-		"psr-4" : {
-			"Gimi\\myFormsTools\\" : "src/"
-		}
-	},
-	"authors" : [{
-			"name" : "Gimigliano",
-			"email" : "nomail@nomail.it"
-		}
-	],
-	"description" : "Tool per costruzione veloce di Form in php"
+  "name": "gimi/myFormsTools",
+  "type": "library",
+  "license": "LGPL-3.0-or-later",
+  "keywords": [
+    "myForms"
+  ],
+  "autoload": {
+    "psr-4": {
+      "Gimi\\myFormsTools\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Gianluca Gimigliano",
+      "email": "nomail@nomail.it",
+      "role": "lead"
+    }
+  ],
+  "require": {
+    "php": ">=7.0"
+  },
+  "description": "Tool per costruzione veloce di Form in php"
 }
