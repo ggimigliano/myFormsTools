@@ -222,8 +222,8 @@ abstract class PHP8
 		}, $format);
 			
 		$charset = strtoupper(ini_get('default_charset'));
-		if($charset!='UTF-8') { Gimi\myFormsTools\PckmyUtils\myCharset::set_charset_against_utf8($charset);
-								$out = Gimi\myFormsTools\PckmyUtils\myCharset::utf8_decode(str_replace('%%', '%', $out));
+		if($charset!='UTF-8') { myCharset::set_charset_against_utf8($charset);
+								$out = myCharset::utf8_decode(str_replace('%%', '%', $out));
 								}
 		return $out;
 	}

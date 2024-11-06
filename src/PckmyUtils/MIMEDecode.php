@@ -126,14 +126,15 @@ class MIMEDecode
 	    function &find($rule,&$parts=array()) {
 	       if(!$parts) $parts=$this->decode(array('include_bodies'=>true,'decode_bodies'=>true,'decode_headers'=>true),false);
 	       if($rule($parts)) return $parts;
-	       if(!$parts->parts && $parts->body && 
+	       if(!isset($parts->parts) && $parts->body && 
 	           ($parts->ctype_primary=='message' || $parts->ctype_primary=='multipart' ))
                                                {$mime=new MIMEDecode($parts->body);
                     	                        $parts=$mime->decode(array('include_bodies'=>true,'decode_bodies'=>true,'decode_headers'=>true),false);
                     	                        unset($parts->body);
                     	                      }
                  	                      
-	       if($parts->parts)  foreach ($parts->parts as &$part)
+           if(isset($parts->parts) && $parts->parts)
+                    	                      	foreach ($parts->parts as &$part)
 	                                   {if($rule($part)) return $part;
 	                                    $found=$this->find($rule,$part);
 	                                    if($found) return $found;
