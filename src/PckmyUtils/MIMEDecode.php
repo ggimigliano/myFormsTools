@@ -120,20 +120,20 @@ class MIMEDecode
 	    
 	   /**
 	    * 
-	    * @param function() $rule è una funzione che riceve in ingresso un nodo del risultato della decode e restituisce true se soddisfa requisito di ricerca
+	    * @param function() $rule   una funzione che riceve in ingresso un nodo del risultato della decode e restituisce true se soddisfa requisito di ricerca
 	    * @return array
 	    */
 	    function &find($rule,&$parts=array()) {
 	       if(!$parts) $parts=$this->decode(array('include_bodies'=>true,'decode_bodies'=>true,'decode_headers'=>true),false);
 	       if($rule($parts)) return $parts;
-	       if(!$parts->parts && $parts->body && 
+	       if(!isset($parts->parts) && $parts->body && 
 	           ($parts->ctype_primary=='message' || $parts->ctype_primary=='multipart' ))
                                                {$mime=new MIMEDECODE($parts->body);
                     	                        $parts=$mime->decode(array('include_bodies'=>true,'decode_bodies'=>true,'decode_headers'=>true),false);
                     	                        unset($parts->body);
                     	                      }
                  	                      
-	       if($parts->parts)  foreach ($parts->parts as &$part)
+	       if(isset($parts->parts) && $parts->parts)  foreach ($parts->parts as &$part)
 	                                   {if($rule($part)) return $part;
 	                                    $found=$this->find($rule,$part);
 	                                    if($found) return $found;
