@@ -120,20 +120,20 @@ class MIMEDecode
 	    
 	   /**
 	    * 
-	    * @param function() $rule   una funzione che riceve in ingresso un nodo del risultato della decode e restituisce true se soddisfa requisito di ricerca
+	    * @param function() $rule è una funzione che riceve in ingresso un nodo del risultato della decode e restituisce true se soddisfa requisito di ricerca
 	    * @return array
 	    */
 	    function &find($rule,&$parts=array()) {
 	       if(!$parts) $parts=$this->decode(array('include_bodies'=>true,'decode_bodies'=>true,'decode_headers'=>true),false);
 	       if($rule($parts)) return $parts;
-	       if(!isset($parts->parts) && $parts->body && 
+	       if(!$parts->parts && $parts->body && 
 	           ($parts->ctype_primary=='message' || $parts->ctype_primary=='multipart' ))
-                                               {$mime=new MIMEDECODE($parts->body);
+                                               {$mime=new MIMEDecode($parts->body);
                     	                        $parts=$mime->decode(array('include_bodies'=>true,'decode_bodies'=>true,'decode_headers'=>true),false);
                     	                        unset($parts->body);
                     	                      }
                  	                      
-	       if(isset($parts->parts) && $parts->parts)  foreach ($parts->parts as &$part)
+	       if($parts->parts)  foreach ($parts->parts as &$part)
 	                                   {if($rule($part)) return $part;
 	                                    $found=$this->find($rule,$part);
 	                                    if($found) return $found;
@@ -151,7 +151,7 @@ class MIMEDecode
 	     * @return object Results of decoding process
 	     * 
 	     */
-	     public function _decode($headers, $body, $default_ctype = 'text/plain',$recursive=true)
+	     protected function _decode($headers, $body, $default_ctype = 'text/plain',$recursive=true)
 	    {
 	        $return = new \stdClass;
 	        $headers = $this->_parseHeaders($headers);
@@ -240,7 +240,7 @@ class MIMEDecode
 	
 	                case 'message/rfc822':
 	                    if($recursive) {
-            	                    $obj = new MIMEDECODE($body,true);
+            	                    $obj = new MIMEDecode($body,true);
             	                    $return->parts[] = $obj->decode(array('include_bodies'=>$this->_include_bodies,
                                                 	                        'decode_bodies' =>$this->_decode_bodies,
                                                 	                        'decode_headers'=>$this->_decode_headers
@@ -297,7 +297,7 @@ class MIMEDecode
 	                    $_mime_number = ($mime_number == '' ? $i + 1 : sprintf('%s.%s', $mime_number, $i + 1));
 	                }
 	
-	                $arr = &MIMEDECODE::getMimeNumbers($structure->parts[$i], $no_refs, $_mime_number, $prepend);
+	                $arr = &$this->getMimeNumbers($structure->parts[$i], $no_refs, $_mime_number, $prepend);
 	                if(is_array($arr))
 	                    foreach (array_keys($arr) as $key ) {
 	                    $no_refs ? $return[$key] = '' : $return[$key] = &$arr[$key];
@@ -323,7 +323,7 @@ class MIMEDecode
 	     * @return array Contains header and body section
 	     * 
 	     */
-	     public function _split_body_header($input)
+	     protected function _split_body_header($input)
 	    {$match=array();
 	        if (preg_match("/^(.*?)\r?\n\r?\n(.*)/s", $input, $match)) {
 	            return array($match[1], $match[2]);
@@ -340,7 +340,7 @@ class MIMEDecode
 	     * @return array Contains parsed headers
 	     * 
 	     */
-	     public function _parseHeaders($input)
+	     protected function _parseHeaders($input)
 	    {
 	
 	        if ($input !== '') {
@@ -378,7 +378,7 @@ class MIMEDecode
 	     * @return array Contains parsed result
 	     * 
 	     */
-	     public function _parseHeaderValue($input)
+	     protected function _parseHeaderValue($input)
 	    {
 	
 	        if (($pos = strpos($input, ';')) !== false) {
@@ -418,7 +418,7 @@ class MIMEDecode
 	     * @return array Contains array of resulting mime parts
 	     * 
 	     */
-	     public function _boundarySplit($input, $boundary)
+	     protected function _boundarySplit($input, $boundary)
 	    {
 			$boundary=trim((string) $boundary);
 			if(substr($boundary,-1)=='"')
@@ -444,7 +444,7 @@ class MIMEDecode
 	     * @return string Decoded header value
 	     * 
 	     */
-	     public function _decodeHeader($input)
+	     protected function _decodeHeader($input)
 	    {
 	        // Remove white space between encoded-words
 	        $input = preg_replace('/(=\?[^?]+\?(q|b)\?[^?]*\?=)(\s)+=\?/i', '\1=?', $input);
@@ -485,7 +485,7 @@ class MIMEDecode
 	     * @return string Decoded body
 	     * 
 	     */
-	     public function _decodeBody($input, $encoding = '7bit')
+	     protected function _decodeBody($input, $encoding = '7bit')
 	    {
 	        switch ($encoding) {
 	            case '7bit':
@@ -513,7 +513,7 @@ class MIMEDecode
 	     * @return string Decoded body
 	     * 
 	     */
-	     public function _quotedPrintableDecode($input)
+	     protected function _quotedPrintableDecode($input)
 	    {
 	        // Remove soft line breaks
 	        $input = preg_replace("/=\r?\n/", '', $input);
@@ -530,7 +530,7 @@ class MIMEDecode
 	     * Checks the input for uuencoded files and returns
 	     * an array of them. Can be called statically, eg:
 	     *
-	     * $files =& MIMEDECODE::uudecode($some_text);
+	     * $files =& $this->uudecode($some_text);
 	     *
 	     * It will check for the begin 666 ... end syntax
 	     * however and won't just blindly decode whatever you
@@ -657,18 +657,18 @@ class MIMEDecode
 	
 	    /**
 	     * Returns a xml copy of the output of
-	     * MIMEDECODE::decode. Pass the output in as the
+	     * $this->decode. Pass the output in as the
 	     * argument. This function can be called statically. Eg:
 	     *
 	     * $output = $obj->decode();
-	     * $xml    = MIMEDECODE::getXML($output);
+	     * $xml    = $this->getXML($output);
 	     *
 	     * The DTD used for this should have been in the package. Or
 	     * alternatively you can get it from cvs, or here:
 	     * http://www.phpguru.org/xmail/xmail.dtd.
 	     *
 	     * @param  object Input to convert to xml. This should be the
-	     *                output of the MIMEDECODE::decode function
+	     *                output of the $this->decode function
 	     * @return string XML version of input
 	     * 
 	     */
@@ -678,7 +678,7 @@ class MIMEDecode
 	        $output  = '<?xml version=\'1.0\'?>' . $crlf .
 	                   '<!DOCTYPE email SYSTEM "http://www.phpguru.org/xmail/xmail.dtd">' . $crlf .
 	                   '<email>' . $crlf .
-	                   MIMEDECODE::_getXML($input) .
+	                   $this->_getXML($input) .
 	                   '</email>';
 	
 	        return $output;
@@ -694,7 +694,7 @@ class MIMEDecode
 	     * @return string  XML version of input
 	     * 
 	     */
-	     public function _getXML($input, $indent = 1)
+	     protected function _getXML($input, $indent = 1)
 	    {
 	        $htab    =  "\t";
 	        $crlf    =  "\r\n";
@@ -706,19 +706,19 @@ class MIMEDecode
 	            // Multiple headers with this name
 	            if (is_array($headers[$hdr_name])) {
 	                for ($i = 0; $i < count($hdr_value); $i++) {
-	                    $output .= MIMEDECODE::_getXML_helper($hdr_name, $hdr_value[$i], $indent);
+	                    $output .= $this->_getXML_helper($hdr_name, $hdr_value[$i], $indent);
 	                }
 	
 	            // Only one header of this sort
 	            } else {
-	                $output .= MIMEDECODE::_getXML_helper($hdr_name, $hdr_value, $indent);
+	                $output .= $this->_getXML_helper($hdr_name, $hdr_value, $indent);
 	            }
 	        }
 	
 	        if (!empty($input->parts)) {
 	            for ($i = 0; $i < count($input->parts); $i++) {
 	                $output .= $crlf . str_repeat($htab, $indent) . '<mimepart>' . $crlf .
-	                           MIMEDECODE::_getXML($input->parts[$i], $indent+1) .
+	                           $this->_getXML($input->parts[$i], $indent+1) .
 	                           str_repeat($htab, $indent) . '</mimepart>' . $crlf;
 	            }
 	        } elseif (isset($input->body)) {
@@ -738,21 +738,21 @@ class MIMEDecode
 	     * @return string  XML version of input
 	     * 
 	     */
-	     public function _getXML_helper($hdr_name, $hdr_value, $indent)
+	     protected function _getXML_helper($hdr_name, $hdr_value, $indent)
 	    {
 	        $htab   = "\t";
 	        $crlf   = "\r\n";
 	        $return = '';
 	
-	        $new_hdr_value = ($hdr_name != 'received') ? MIMEDECODE::_parseHeaderValue($hdr_value) : array('value' => $hdr_value);
+	        $new_hdr_value = ($hdr_name != 'received') ? $this->_parseHeaderValue($hdr_value) : array('value' => $hdr_value);
 	        $new_hdr_name  = str_replace(' ', '-', ucwords(str_replace('-', ' ', $hdr_name)));
 	
 	        // Sort out any parameters
 	        if (!empty($new_hdr_value['other'])) {
 	            foreach ($new_hdr_value['other'] as $paramname => $paramvalue) {
 	                $params[] = str_repeat($htab, $indent) . $htab . '<parameter>' . $crlf .
-	                            str_repeat($htab, $indent) . $htab . $htab . '<paramname>' .\Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($paramname) . '</paramname>' . $crlf .
-	                            str_repeat($htab, $indent) . $htab . $htab . '<paramvalue>' .\Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($paramvalue) . '</paramvalue>' . $crlf .
+	                            str_repeat($htab, $indent) . $htab . $htab . '<paramname>' .Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($paramname) . '</paramname>' . $crlf .
+	                            str_repeat($htab, $indent) . $htab . $htab . '<paramvalue>' .Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($paramvalue) . '</paramvalue>' . $crlf .
 	                            str_repeat($htab, $indent) . $htab . '</parameter>' . $crlf;
 	            }
 	
@@ -762,8 +762,8 @@ class MIMEDecode
 	        }
 	
 	        $return = str_repeat($htab, $indent) . '<header>' . $crlf .
-	                  str_repeat($htab, $indent) . $htab . '<headername>' .\Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($new_hdr_name) . '</headername>' . $crlf .
-	                  str_repeat($htab, $indent) . $htab . '<headervalue>' .\Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($new_hdr_value['value']) . '</headervalue>' . $crlf .
+	                  str_repeat($htab, $indent) . $htab . '<headername>' .Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($new_hdr_name) . '</headername>' . $crlf .
+	                  str_repeat($htab, $indent) . $htab . '<headervalue>' .Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($new_hdr_value['value']) . '</headervalue>' . $crlf .
 	                  $params .
 	                  str_repeat($htab, $indent) . '</header>' . $crlf;
 	
