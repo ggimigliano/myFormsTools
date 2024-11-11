@@ -41,13 +41,17 @@ class myRAMStream {
 	private $eof = false;
 	private $mode = null;
 	private $path;
-	protected static $vars=array(); 
+	protected static $vars=array(),$prefs=array(); 
 	private $info = null;
 	public $context;
+
 	
-	public static function getStorage($prefix=''){
+	
+	public static function &getStorage($prefix=''){
 		if(!$prefix) return static::$vars;
-				else return static::$vars[$prefix];
+			elseif(isset(static::$vars[$prefix])) return static::$vars[$prefix];
+		$null=null;
+		return $null;	
 	}
 	
 	public static function formatStorage($prefix=''){
@@ -60,8 +64,19 @@ class myRAMStream {
 	public static function register($prefix='myram'){
 		//(re)register the wrapper
 		static::$streamprefix=$prefix;
-		if(in_array(static::$streamprefix,stream_get_wrappers())) stream_wrapper_unregister(static::$streamprefix);
+		static::$prefs[$prefix]=$prefix;
+		if(in_array(static::$streamprefix,stream_get_wrappers())) return true;
 		return stream_wrapper_register(static::$streamprefix,get_called_class());
+	}
+	
+	public static function unregister($prefix='myram'){
+		if(in_array($prefix,stream_get_wrappers()))
+					{self::formatStorage($prefix);
+					 unset(static::$prefs[$prefix]);
+					 stream_wrapper_unregister($prefix);
+					 static::$streamprefix=null;
+					}
+		 
 	}
 
 	public function __construct(){}
@@ -77,7 +92,7 @@ class myRAMStream {
                                                         			,'ctime'	=>	time()				//created timestamp
                                                         			,'mtime'	=>	time()				//last modified timestamp
                                                         			,'atime'	=>	time()				//last accessed timestamp
-                                                        			,'blksize'	=>	512					//block size of filesystem
+                                                        			,'blksize'	=>	4096				//block size of filesystem
                                                         			,'data'     =>'',
                                                         		);
 		$this->info=static::$vars[static::$streamprefix][$this->path];
@@ -116,18 +131,23 @@ class myRAMStream {
 	//general utility functions
 	public static function parsePath($path){
 		//strip prefix
-		
-		$path = str_replace(static::getPrefix(),'',str_replace('\\','/',$path));
+		$path=str_replace('\\','/',$path);
+		foreach (static::$prefs as $pref)
+			if(strpos($path, $pref)===0) 
+						{$path = substr($path,strlen($pref)+1);
+						 static::$streamprefix=$pref;
+						 break;
+						}
 		//break off the query string if we can
 		if(strpos($path,'?') !== false){
-			$query = substr($path,strpos($path,'?'));
-			$path = substr($path,0,(strlen($path)-strlen($query)));
-			//remove the questionmark
-			$query = str_replace('?','',$query);
-		}
+											$query = substr($path,strpos($path,'?'));
+											$path = substr($path,0,(strlen($path)-strlen($query)));
+											//remove the questionmark
+											$query = str_replace('?','',$query);
+										}
 		//setup opts
 		if(!$path || $path[0]!='/') $path='/'.$path;
-		$opts=array();
+		$opts=array('pref'=>$pref);
 		$opts['path'] = $path;
 		$opts['params'] = array();
 		if(isset($query)) parse_str($query,$opts['params']);
@@ -161,7 +181,7 @@ class myRAMStream {
 		//10	ctime	time of last inode change (Unix timestamp)
 		$stat[10]	=	$stat['ctime']		= $this->getCtime();
 		//11	blksize	blocksize of filesystem IO **
-		$stat[11]	=	$stat['blksize']	= $this->getSize();
+		$stat[11]	=	$stat['blksize']	= max($this->getSize(),4096);
 		//12	blocks	number of 512-byte blocks allocated **
 		$stat[12]	=	$stat['blocks']		= 1;
 		return $stat;
@@ -187,7 +207,7 @@ class myRAMStream {
 			default:
 				return false; //unsupported
 				break;
-			case STREAM_OPTION_WRITE_BUFFER: //The method was called in response to stream_set_write_buffer()
+			case STREAM_OPTION_WRITE_BUFFER:
 				switch($arg1){
 					case STREAM_BUFFER_NONE:
 						//DGAF, we buffer anyways because PHP streams use 8K buffers and this isn't 1998
@@ -216,6 +236,8 @@ class myRAMStream {
 
 		if($mode[0]=='a') $this->position=strlen($this->info['data']);
 	    	elseif($mode[0]=='w') $this->info['data']='';	
+	#	stream_set_read_buffer($stream, 99999);
+	#	stream_set_write_buffer($stream, 99999);
 		
 		return true;
 	}
@@ -238,23 +260,33 @@ class myRAMStream {
        {
         if($this->info===null) return false;
         $this->info['atime']=time();
-        $ret = substr($this->info['data'], $this->position, $count);
-        $this->position = min($this->position+strlen($ret),strlen($this->info['data']));
-        return $ret;
+        $pos = $this->position;
+        $this->position = min($this->position+$count,strlen($this->info['data']));
+        if($pos>= strlen($this->info['data'])) return false;
+        	elseif($pos==0 && strlen($this->info['data'])<=$count) 
+        			  return $this->info['data'];
+       			 else return substr($this->info['data'], $pos, $count);
        }
 
      public function stream_write($data)
     	{
     	if($this->info===null) return false;
         $this->info['mtime']=$this->info['atime']=time();
- #   	for($i=0;$i<strlen($data);$i++) {
- #   	    $this->info['data'][$this->position]=$data[$i];
- #   	    $this->position++;
- #   	}
-    	$left = substr($this->info['data'], 0, $this->position);
-        $right = substr($this->info['data'], $this->position + strlen($data));
-        $this->info['data'] = $left . $data . $right;
-        $this->position += strlen($data);
+        $length=strlen($data);
+        if($this->position==0)  {$this->info['data'] = &$data;	
+        						 $this->position= $length;
+        						}
+	          	else { 
+	          		if(!function_exists('substr_replace'))
+	          				 	  for($i=0;$i<$length;$i++)$this->info['data'][$this->position++]=$data[$i];
+	          				else{ $this->info['data'] = substr_replace($this->info['data'], $data ,$this->position, strlen($data));
+		          				  $this->position += $length;
+	          					}
+				    		
+					    		
+					
+																	    	
+	   				}
         clearstatcache();
         return strlen($data);
     	}
@@ -269,7 +301,7 @@ class myRAMStream {
      public function stream_eof()
     	{
     	    if($this->info===null) return false;
-        return $this->position >= strlen($this->info['data']);
+    	    return $this->position >= strlen($this->info['data']);  
     	}
     	
     public function stream_truncate($size) {
