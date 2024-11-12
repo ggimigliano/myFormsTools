@@ -1,5 +1,4 @@
 <?php
-
 namespace Gimi\myFormsTools\PckmyUtils;
 
 
@@ -752,8 +751,8 @@ class MIMEDecode
 	        if (!empty($new_hdr_value['other'])) {
 	            foreach ($new_hdr_value['other'] as $paramname => $paramvalue) {
 	                $params[] = str_repeat($htab, $indent) . $htab . '<parameter>' . $crlf .
-	                            str_repeat($htab, $indent) . $htab . $htab . '<paramname>' .Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($paramname) . '</paramname>' . $crlf .
-	                            str_repeat($htab, $indent) . $htab . $htab . '<paramvalue>' .Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($paramvalue) . '</paramvalue>' . $crlf .
+	           			        str_repeat($htab, $indent) . $htab . $htab . '<paramname>' .PHP8::htmlspecialchars($paramname) . '</paramname>' . $crlf .
+	                            str_repeat($htab, $indent) . $htab . $htab . '<paramvalue>' .PHP8::htmlspecialchars($paramvalue) . '</paramvalue>' . $crlf .
 	                            str_repeat($htab, $indent) . $htab . '</parameter>' . $crlf;
 	            }
 	
@@ -763,8 +762,8 @@ class MIMEDecode
 	        }
 	
 	        $return = str_repeat($htab, $indent) . '<header>' . $crlf .
-	                  str_repeat($htab, $indent) . $htab . '<headername>' .Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($new_hdr_name) . '</headername>' . $crlf .
-	                  str_repeat($htab, $indent) . $htab . '<headervalue>' .Gimi\myFormsTools\PckmyUtils\PHP8::htmlspecialchars($new_hdr_value['value']) . '</headervalue>' . $crlf .
+	                  str_repeat($htab, $indent) . $htab . '<headername>' .PHP8::htmlspecialchars($new_hdr_name) . '</headername>' . $crlf .
+	                  str_repeat($htab, $indent) . $htab . '<headervalue>' .PHP8::htmlspecialchars($new_hdr_value['value']) . '</headervalue>' . $crlf .
 	                  $params .
 	                  str_repeat($htab, $indent) . '</header>' . $crlf;
 	
