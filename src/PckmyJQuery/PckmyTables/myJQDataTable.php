@@ -937,6 +937,7 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
 	}
 	
 	 public function get_html(){
+	  	 $rotella='';
 	      if($this->hiddenBeforeLoading) { 
 	                                    if(strtolower(myJQueryUI::get_tema())=='redmond') $tema='redmond';
 		                                                                             else $tema='base';

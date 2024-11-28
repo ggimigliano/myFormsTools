@@ -9,6 +9,8 @@ namespace Gimi\myFormsTools\PckmySessions;
 
 
 
+use Gimi\myFormsTools\PckmyFields\myField;
+
 /**
  * Analoga alle mySessions nei metodi ma diversa nel funzionamento.
  * Tutte le variabili vengono salvate in dei file condivisi da tutti gli script.
@@ -57,7 +59,7 @@ class myFileSessions extends MyStorageSessions {
 /** @ignore */
 protected $percorso='', $prefisso='MFS_', $stato=null, $modificate=array();
 /** @ignore */
-protected static $percorso_default;
+protected static $percorso_default='';
 
 /** @ignore */
 protected function my_delete($k) {return mySessions::del($k);}
@@ -77,12 +79,15 @@ protected function my_get($k) {}
     */
 	 public function __construct($procedura,$directory='') {
 		static $dati,$modificate;
+		if(!self::$percorso_default) self::$percorso_default=__MYFORM_DATACACHE__.'/myFileSessions';
 		if (!$procedura) {return null;}
 		$this->procedura=$procedura;
 		if ($directory) {if(!is_dir($directory)) @mkdir($directory,0770,true);
 						 $this->percorso=$directory;
 						}
-		if (!is_dir($this->percorso)) {if(!is_dir(self::$percorso_default)) @mkdir(self::$percorso_default,0770,true);
+					
+		if (!$this->percorso || !is_dir($this->percorso)) 
+									  {if(!is_dir(self::$percorso_default)) @mkdir(self::$percorso_default,0770,true);
 										$this->percorso=self::$percorso_default;
 									  }
 		if (!is_dir($this->percorso)) $this->percorso=ini_get('session.save_path');
@@ -92,10 +97,11 @@ protected function my_get($k) {}
 		if (!is_dir($this->percorso) && !@mkdir($this->percorso,null,0770)) return null;
 		$this->modificate=&$modificate;
 		$this->dati=&$dati;
-	    if(is_array($this->dati[$this->prefisso.$this->procedura]))
+		if(isset($this->dati[$this->prefisso.$this->procedura]) && 
+					is_array($this->dati[$this->prefisso.$this->procedura]))
                                     foreach (array_keys($this->dati[$this->prefisso.$this->procedura]) as $nome)
                                                         self::$nomi[$this->prefisso.$this->procedura][$nome]=true;
-		if (!$this->dati[$this->prefisso.$this->procedura]) $this->load_procedura();
+         if (!isset($this->dati[$this->prefisso.$this->procedura]) || !$this->dati[$this->prefisso.$this->procedura]) $this->load_procedura();
 	}
 
 	/**

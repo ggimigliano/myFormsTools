@@ -266,7 +266,7 @@ class myForm_XML extends myForm_MySql {
 		foreach ( $this->colonne as $colonna ) {
 			$COLONNA = strtoupper ( $colonna );
 			$this->colonneOriginali [$COLONNA] = $colonna;
-			$this->ParametriAutomatici [$COLONNA] ['MYTYPE'] = 'MyText';
+			$this->ParametriAutomatici [$COLONNA] ['MYTYPE'] = 'Text';
 		}
 
 		$this->carica_xml ();

@@ -464,7 +464,9 @@ var keycode;
 
 
   /** @ignore*/
-   public function set_MyType($nome) {$this->MyType=$nome; }
+  public function set_MyType($nome) {  $nome[0]=strtolower($nome[0]);
+   										$this->MyType=$nome; 
+   									   }
 
 
   /** @ignore*/

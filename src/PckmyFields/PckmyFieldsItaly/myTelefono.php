@@ -3,7 +3,7 @@
  * Contains Gimi\myFormsTools\PckmyFields\myFieldsItaly\myTelefono.
  */
 
-namespace Gimi\myFormsTools\PckmyFields\myFieldsItaly;
+namespace Gimi\myFormsTools\PckmyFields\PckmyFieldsItaly;
 
  
 use Gimi\myFormsTools\PckmyFields\myField;

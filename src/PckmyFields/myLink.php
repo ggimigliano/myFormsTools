@@ -67,6 +67,7 @@ class myLink extends myTag {
 
 			/** @ignore*/
 		   public function set_MyType($nome) {
+		   			 $nome[0]=strtolower($nome[0]);
 					 $this->MyType=$nome;
 					 return $this;
 		  }

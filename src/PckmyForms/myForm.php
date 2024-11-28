@@ -1459,7 +1459,7 @@ protected  	$docOn=false,$refreshCaches=false,$prefix,$secure,$ultimoErrore, $JQ
 						  	                                                                                                   else break;
 		                    foreach ($ordine as $nome_campo) {
 		                             $campo=$this->campo($nome_campo);
-									 if($campo && $campo->get_MyType()!='MyHidden')
+									 if($campo && $campo->get_MyType()!='myHidden')
 										 {
 										  $si_label=$this->get_label($nome_campo);
 									      if ($si_label)
@@ -2216,7 +2216,7 @@ protected  	$docOn=false,$refreshCaches=false,$prefix,$secure,$ultimoErrore, $JQ
 	  	if ($this->autotab) $campObj->set_autotab();
 		if($this->secure && method_exists($campObj,'set_security')) $campObj->set_security($this->secure);
 		if($this->pref_html=='div' && method_exists($campObj,'set_usaDIV')) $campObj->set_usaDIV();
-	  	if($campObj->get_MyType()!='MyHidden')
+	  	if($campObj->get_MyType()!='myHidden')
 	  				{
 	  				 $js_dipendenze=$this->get_js_dipendenze_campo($campo);
 
@@ -2239,7 +2239,7 @@ protected  	$docOn=false,$refreshCaches=false,$prefix,$secure,$ultimoErrore, $JQ
 					 		}
 					}
 
-	  	$x= ($campObj->get_MyType()!='MyHidden'?"<a name='id_".$campObj->get_id()."'></a>":'').$campObj->get_html().$js_dipendenze;
+	  	$x= ($campObj->get_MyType()!='myHidden'?"<a name='id_".$campObj->get_id()."'></a>":'').$campObj->get_html().$js_dipendenze;
 
 	  	$campo=strtolower($campo);
 	  	if ($x) {$pre=$post='';

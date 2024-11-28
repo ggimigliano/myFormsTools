@@ -21,6 +21,7 @@ abstract class myCharset
     }
     
     public static function  utf8_encode($string){
+    	if($string===null || $string==='') return $string;
         if(class_exists('UConverter',false))   return self::utf8_encode_intl($string);
         if(is_callable('mb_convert_encoding')) return self::utf8_encode_mb($string);
         if(is_callable('iconv'))              return self::utf8_encode_iconv($string);
@@ -28,6 +29,7 @@ abstract class myCharset
     }
     
     public static function  utf8_decode($string){
+    	if($string===null || $string==='') return $string;
         if(class_exists('UConverter',false))   return self::utf8_decode_intl($string);
         if(is_callable('mb_convert_encoding')) return self::utf8_decode_mb($string);
         if(is_callable('iconv'))               return self::utf8_decode_iconv($string);
@@ -35,8 +37,9 @@ abstract class myCharset
     }
 
     public static function  &utf8_rencode( $item,$anche_chiavi=false){
-        if(is_string($item)) $item=static::utf8_encode($item);
-         elseif(is_array($item)) foreach (array_keys($item) as $k)
+       if($item===null) return $item;
+    	elseif(is_string($item)) $item=static::utf8_encode($item);
+           elseif(is_array($item)) foreach (array_keys($item) as $k)
                                          if(!$anche_chiavi)  $item[$k]=static::utf8_encode($item[$k],false);
                                                                 else {$K=static::utf8_encode($k);
                                                                         $item[$K]=static::utf8_rencode($item[$k],true);
@@ -55,7 +58,8 @@ abstract class myCharset
     
     
     public static function  &utf8_rdecode( $item,$anche_chiavi=false){
-        if(is_string($item)) $item=static::utf8_decode($item);
+     if($item===null) return $item;	
+        elseif(is_string($item)) $item=static::utf8_decode($item);
             elseif(is_array($item)) foreach (array_keys($item) as $k)
                                              if(!$anche_chiavi)  $item[$k]=static::utf8_decode($item[$k],false);
                                                             else {$K=static::utf8_decode($k);

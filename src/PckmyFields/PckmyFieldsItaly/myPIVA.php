@@ -3,7 +3,7 @@
  * Contains Gimi\myFormsTools\PckmyFields\myFieldsItaly\myArrayObject.
  */
 
-namespace Gimi\myFormsTools\PckmyFields\myFieldsItaly;
+namespace Gimi\myFormsTools\PckmyFields\PckmyFieldsItaly;
 
 
  

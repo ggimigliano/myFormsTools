@@ -213,24 +213,24 @@ protected  $SalvaInfo=43200;
 	        {
 	          if (strpos($val['TIPO'],'enum')!==false) {
 	        	  //print_r($val);
-	        	  if (count(explode("','",$val['TIPO']))>4)  $this->ParametriAutomatici[$id]['MYTYPE']='MySelect';
-	        	                                       else  $this->ParametriAutomatici[$id]['MYTYPE']='MyRadio';
+	        	  if (count(explode("','",$val['TIPO']))>4)  $this->ParametriAutomatici[$id]['MYTYPE']='mySelect';
+	        	                                       else  $this->ParametriAutomatici[$id]['MYTYPE']='myRadio';
 	          }
 	          if (strpos($val['TIPO'],'set')!==false) {
-	        	  						 	$this->ParametriAutomatici[$id]['MYTYPE']='MyMultiCheck';
+	        	  						 	$this->ParametriAutomatici[$id]['MYTYPE']='myMultiCheck';
 	        	                   	 	    }
 	          if (preg_match('/blob$|text$/i',$val['TIPO']))
-	          									{$this->ParametriAutomatici[$id]['MYTYPE']='MyTextArea';
+	          									{$this->ParametriAutomatici[$id]['MYTYPE']='myTextArea';
 	          									 if (stripos($val['TIPO'],'tiny')!==false) $this->ParametriAutomatici[$id]['MAXSIZE']=255;
 	          									   	elseif (stripos($val['TIPO'],'long')!==false) $this->ParametriAutomatici[$id]['MAXSIZE']=4294967295;
 	          									   	 	elseif (stripos($val['TIPO'],'medium')!==false) $this->ParametriAutomatici[$id]['MAXSIZE']=16777215;
 	          									  	   		else $this->ParametriAutomatici[$id]['MAXSIZE']=65535;
 	         									 }
-	  	      if ($val['TIPO']=='time') {$this->ParametriAutomatici[$id]['MYTYPE']='MyTime';
+	  	      if ($val['TIPO']=='time') {$this->ParametriAutomatici[$id]['MYTYPE']='myTime';
 	  	      							 unset($this->ParametriAutomatici[$id]['MAXSIZE']);
 	        	 						 unset($this->ParametriAutomatici[$id]['DECIMALI']);
 	          							 }
-	  	      if ($val['TIPO']=='year')   {$this->ParametriAutomatici[$id]['MYTYPE']='MyIntPos';
+	  	      if ($val['TIPO']=='year')   {$this->ParametriAutomatici[$id]['MYTYPE']='myIntPos';
 	  	      							   $this->ParametriAutomatici[$id]['ADODB']='I';
 	  	        						   unset($this->ParametriAutomatici[$id]['MAXSIZE']);
 	        	 						   unset($this->ParametriAutomatici[$id]['DECIMALI']);
@@ -260,7 +260,7 @@ protected  $SalvaInfo=43200;
 	 		                            preg_match('@^[a-z]+@', $val['TIPO'], $TIPO);
 	 		                            $TIPO=$TIPO[0];
 	 		                           }
-	 	     if ($val['MYTYPE']=='MyIntPos'){
+	 	     if ($val['MYTYPE']=='myIntPos'){
                                 	         if ($TIPO=='tinyint') $this->campi[$id]->set_max(255);
                                 	  	       	elseif ($TIPO=='smallint') $this->campi[$id]->set_max(65535);
                                 	  	        		elseif ($TIPO=='mediumint') $this->campi[$id]->set_max(16777215);
@@ -269,7 +269,7 @@ protected  $SalvaInfo=43200;
                                	    	  }
 
 
-	    	  if ($val['MYTYPE']=='MyInt'){
+	    	  if ($val['MYTYPE']=='myInt'){
 	    	     if ($TIPO=='tinyint') {$this->campi[$id]->set_max(127);
 	    	      								$this->campi[$id]->set_min(-128);
 	    	      								}
@@ -288,15 +288,15 @@ protected  $SalvaInfo=43200;
 	  	      }
 
 
-		      if ($val['MYTYPE']=='MyOrario' || $val['MYTYPE']=='MyOra')
+		      if ($val['MYTYPE']=='myOrario' || $val['MYTYPE']=='myOra')
 		      								  { $v=explode(':',$this->campi[$id]->get_value());
 		      								  	unset($v[2]);
 		      								    $this->campi[$id]->set_value(implode(':',$v));
 	  	      								  }
 
-	  	      if (isset($this->campi[$id]) && $this->campi[$id] && ($val['MYTYPE']=='MySelect' || $val['MYTYPE']=='MyRadio'  || $val['MYTYPE']=='MyMultiCheck') && (isset($val['TIPO']) && preg_match('/enum|set/',$val['TIPO'])))
+	  	      if (isset($this->campi[$id]) && $this->campi[$id] && ($val['MYTYPE']=='mySelect' || $val['MYTYPE']=='myRadio'  || $val['MYTYPE']=='myMultiCheck') && (isset($val['TIPO']) && preg_match('/enum|set/',$val['TIPO'])))
 	  	                                    {  $opzioni=array();
-	  	                                       if(!$this->campi[$id]->get_notnull() && $val['MYTYPE']=='MyRadio') $opzioni=array();
+	  	                                       if(!$this->campi[$id]->get_notnull() && $val['MYTYPE']=='myRadio') $opzioni=array();
 	  	                                       $v=preg_split("~\\('|','|'\\)~",str_replace("''","'",$val['TIPO']));
 	  	                                       if ($v){
         	  	                                    	 unset($v[count($v)-1]);
@@ -306,11 +306,11 @@ protected  $SalvaInfo=43200;
 	  	                                    	$opz=array();
 	  	                                    	foreach ($opzioni as $o) $opz[$this->trasl($o)]=$o;
 	  	                                    	$this->campi[$id]->set_Opzioni($opz);
-	  	      								    if(!$this->campi[$id]->get_notnull() && !isset($opz['']) && $val['MYTYPE']=='MySelect') $this->campi[$id]->set_domanda(' ');
-	  	      								    if(strlen(serialize(array_keys($opz)))<=80 && ($val['MYTYPE']=='MyRadio'  || $val['MYTYPE']=='MyMultiCheck')) $this->campi[$id]->SET_accapo(0,1);	
+	  	      								    if(!$this->campi[$id]->get_notnull() && !isset($opz['']) && $val['MYTYPE']=='mySelect') $this->campi[$id]->set_domanda(' ');
+	  	      								    if(strlen(serialize(array_keys($opz)))<=80 && ($val['MYTYPE']=='myRadio'  || $val['MYTYPE']=='myMultiCheck')) $this->campi[$id]->SET_accapo(0,1);	
 	  	                                    }
 	  	                                    
-	  	      if (isset($val['TIPO']) && $val['MYTYPE']=='MyTextArea' && preg_match('/medium|long/',$val['TIPO'])) $this->campi[$id]->set_rows('30');
+	  	      if (isset($val['TIPO']) && $val['MYTYPE']=='myTextArea' && preg_match('/medium|long/',$val['TIPO'])) $this->campi[$id]->set_rows('30');
 	  	     
 	  	      if (isset($val['TIPO']) && $val['TIPO']=='year')  
 	  	                                  {$this->campi[$id]->set_max(2100,4);

@@ -16,6 +16,7 @@ use Gimi\myFormsTools\PckmySessions\mySessions;
 
 
 
+
 /**
  *  Questa classe permette la costruzione e gestione facilitata di Form basate su una tabella di DB generico
  *  Supponiamo di voler costruire una form da una tabella Prodotti costituita id(Pk),Nome,Prezzo
@@ -26,7 +27,7 @@ use Gimi\myFormsTools\PckmySessions\mySessions;
  * if (!$_GET['id']) $_GET['id']=$_POST['id']; //se non $_GET['id'] lo valorizza con un eventuale precedente valore postato
  * $f=new myForm_DB($AdoConn,'','Prodotti',array('id'=>$_GET['id']));
  * $f->Analizza_Tabella(); //prima di ogni cosa
- * $f->CambiaTipoCampo('PREZZO','MyEuro'); //il tipo di default assegnato da myForm non mi piace e lo cambio
+ * $f->CambiaTipoCampo('PREZZO','myEuro'); //il tipo di default assegnato da myForm non mi piace e lo cambio
  * $f->IstanziaCampi(); //Ora non si possono pi u'  cambiare i tipi;
  * if ($_POST['id']) {//se E' stato premuto un pulsante
  * 					$f->set_values($_POST); //cambio i valori dei campi con quelli postati
@@ -463,61 +464,61 @@ protected static $cacheQuotati=array(),$check_f5=true;
 					switch ($type)
 					{
 						case 'C': {
-						 			if ($len>90) $tipo="MyTextArea";
-										elseif ($len==1) $tipo="MyBoolean";
-										   else $tipo="MyText";
+						 			if ($len>90) $tipo="myTextArea";
+										elseif ($len==1) $tipo="myBoolean";
+										   else $tipo="myText";
 									}
 						break;
 
-						case 'X':  if ($len>90) $tipo="MyTextArea";
-										elseif ($len==1) $tipo="MyBoolean";
-										   else $tipo="MyText";
+						case 'X':  if ($len>90) $tipo="myTextArea";
+										elseif ($len==1) $tipo="myBoolean";
+										   else $tipo="myText";
 						break;
 
-						case 'B': if ($len>90) $tipo="MyTextArea";
-										elseif ($len==1)	$tipo="MyBoolean";
-										   else $tipo="MyText";
+						case 'B': if ($len>90) $tipo="myTextArea";
+										elseif ($len==1)	$tipo="myBoolean";
+										   else $tipo="myText";
 						break;
 
-						case 'D': $tipo="MyDate";
+						case 'D': $tipo="myDate";
 						break;
 
 						case 'T':{
-								if ($len==8) 	$tipo="MyTime";
-										   else $tipo="MyDateTime";
+								if ($len==8) 	$tipo="myTime";
+										   else $tipo="myDateTime";
 								}
 						break;
 
-						case 'L':		$tipo="MyBoolean";
+						case 'L':		$tipo="myBoolean";
 						break;
 
 						case 'I':{
-								IF (!$this->ParametriAutomatici[$key]['INCREMENTALE']) $tipo="MyInt";
-																     			  else $tipo="MyHidden";
+								IF (!$this->ParametriAutomatici[$key]['INCREMENTALE']) $tipo="myInt";
+																     			  else $tipo="myHidden";
 								 }
 						break;
 
 						case 'N': {
-						   		  if ($fld->scale>0) {$tipo="MyFloat";
+						   		  if ($fld->scale>0) {$tipo="myFloat";
 						   		  					  $this->ParametriAutomatici[$key]['DECIMALI']=$fld->scale;
 						   		  					  $this->ParametriAutomatici[$key]['MAXSIZE']=max(6,$len);
 						   		  					  }
-						   		              else   {$tipo="MyInt";
+						   		              else   {$tipo="myInt";
 						   		              		  $this->ParametriAutomatici[$key]['MAXSIZE']=max(4,$len);
 						   		              		  }
 								  }
 
 						break;
-						case 'R': $tipo="MyHidden";
+						case 'R': $tipo="myHidden";
 						break;
 						}
-					if ($this->ParametriAutomatici[$key]['POSITIVO'] && 'MyInt'==$tipo) $tipo='MyIntPos';
-					$this->ParametriAutomatici[$key]['MYTYPE']=$tipo;
+					if ($this->ParametriAutomatici[$key]['POSITIVO'] && 'myInt'==$tipo) $tipo='myIntPos';
+					$this->ParametriAutomatici[$key]['MYTYPE']="Gimi\\myFormsTools\\PckmyFields\\$tipo";
 
 		            }
 		
     	$this->SpecificheTecnologiche();
-    	if ( ('MyDate'==$tipo  || 'MyDateTime'==$tipo) && ''==str_replace(array(':','-','0',' '),'',$this->ParametriAutomatici[$key]['VALORE'])  ) $this->ParametriAutomatici[$key]['VALORE']='';
+    	if ( ('myDate'==$tipo  || 'myDateTime'==$tipo) && ''==str_replace(array(':','-','0',' '),'',$this->ParametriAutomatici[$key]['VALORE'])  ) $this->ParametriAutomatici[$key]['VALORE']='';
     	
 		
 	//
@@ -530,7 +531,7 @@ protected static $cacheQuotati=array(),$check_f5=true;
 		//	}
 	   	if (!$this->chiavi) Throw new \Exception( "Impossibile individuare chiave primaria, usare Set_chiavi() prima di Analizza_tabella({$this->tabella})");
 		$k=array_flip($this->chiavi);
-		if ($this->ParametriAutomatici) foreach ($this->ParametriAutomatici as $key=>$vals)   if (!isset($k[$key]) && $vals['FK']) $this->ParametriAutomatici[$key]['MYTYPE']='MySelect';
+		if ($this->ParametriAutomatici) foreach ($this->ParametriAutomatici as $key=>$vals)   if (!isset($k[$key]) && $vals['FK']) $this->ParametriAutomatici[$key]['MYTYPE']='mySelect';
 
 
 		$ADODB_COUNTRECS= $tempcount;
@@ -1057,7 +1058,13 @@ protected static $cacheQuotati=array(),$check_f5=true;
 	  			//print_r($campo);
 	  			//if ($J++==5) exit;
 	  		 if(!isset($val['MYTYPE'])) continue;
-	  		 $campo=new $val['MYTYPE']($id,null);
+	  		 
+	  		 $classe=$val['MYTYPE'];
+	  		 if(strpos($classe,'\\')===false &&
+	  		 	stripos($classe,'my')===0 &&
+	  		 	!class_exists($classe) &&
+	  		 		class_exists("Gimi\\myFormsTools\\PckmyFields\\$classe")) $classe="Gimi\\myFormsTools\\PckmyFields\\$classe";
+	  		 $campo=new $classe($id,null);
 
 	   		 $this->add_campo($campo,'',true);
 			//print_r($this->campi);
@@ -1067,7 +1074,7 @@ protected static $cacheQuotati=array(),$check_f5=true;
 	  		if (is_object($this->campi[$id]) &&
 	  		    $this->campi[$id]->estende('myText',true) )
 	  				{
-	  				if ($val['MAXSIZE'] && $val['MYTYPE']!='MyDate')
+	  				if ($val['MAXSIZE'] && $val['MYTYPE']!='myDate')
 	  						{
 	  						 if( $this->campi[$id]->estende('myFloat',true))
 	  						 			{$MinMax=str_repeat('9', $val['MAXSIZE']-$val['DECIMALI']-$val['DECIMALI']-1).'.'.str_repeat('9',$val['DECIMALI']);
@@ -1085,12 +1092,12 @@ protected static $cacheQuotati=array(),$check_f5=true;
 	  						}
 	  				}
 
-	  			if ($val['MYTYPE']=='MyTextArea') {$this->campi[$id]->set_rows(4);
+	  			if ($val['MYTYPE']=='myTextArea') {$this->campi[$id]->set_rows(4);
 	  	      								       $this->campi[$id]->set_cols(70);
 	  	      								      }
-	  	      	if ($val['MYTYPE']=='MyOrario')	 $this->campi[$id]->set_minuti($val['VALORE']);
+	  	      	if ($val['MYTYPE']=='myOrario')	 $this->campi[$id]->set_minuti($val['VALORE']);
 
-	  	      	if ($val['MYTYPE']=='MySelect' && $carica_FK && is_array($val['FK']))
+	  	      	if ($val['MYTYPE']=='mySelect' && $carica_FK && is_array($val['FK']))
 	  	      									{
 	  	      									 $tempmode=$this->con->SetFetchMode(ADODB_FETCH_ASSOC);
     											 //echo "<pre>",$tab,print_r($val);
@@ -1114,7 +1121,7 @@ protected static $cacheQuotati=array(),$check_f5=true;
          foreach ($this->ParametriAutomatici as $id=>$val)
 	  		if ((!$colonne || isset($colonne[$id])) && isset($this->campi[$id]) && $this->campi[$id])
 	  			{
-	  	      	if ($val['MYTYPE']=='MyMultiCheck') $values[$id]=(!isset($val['VALORE']) || trim((string) $val['VALORE'])!==''?explode(',',$val['VALORE']):array());
+	  	      	if ($val['MYTYPE']=='myMultiCheck') $values[$id]=(!isset($val['VALORE']) || trim((string) $val['VALORE'])!==''?explode(',',$val['VALORE']):array());
 	  										   ELSE $values[$id]=(isset($val['VALORE'])?$val['VALORE']:'');
 	  		  	}
       

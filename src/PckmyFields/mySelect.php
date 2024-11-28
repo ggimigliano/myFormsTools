@@ -24,7 +24,7 @@ use Gimi\myFormsTools\PckmyJQuery\myJQuery;
 class mySelect extends myField {
 /**
  @ignore */
-protected $accessibile=false,$optgroups=array(),$opzioni=array(),$default='',$reloaJSGET='',$pulsante,$attributi_opzioni,$ajaxloader=array(),$restrizioni_check=true;
+protected $qry,$accessibile=false,$optgroups=array(),$opzioni=array(),$default='',$reloaJSGET='',$pulsante,$attributi_opzioni,$ajaxloader=array(),$restrizioni_check=true;
 /**
  @ignore */
 protected static $all_ajaxloader=array();
@@ -151,7 +151,7 @@ protected static $all_ajaxloader=array();
 									'onafterload'=>$onloaded,
 									'icona'=>$icona_caricamento);
 			
-			if(!class_exists('myJQFake',false)) {eval ('c'.'lass myJQFake extends myJQuery {}');
+			if(!class_exists('myJQFake',false)) {eval ('c'.'lass myJQFake extends Gimi\\myFormsTools\\PckmyJQuery\\myJQuery {}');
 			                                     eval ('$this->add_myJQuery(new myJQFake());');
 			                                     }
 			return $this;
@@ -758,18 +758,19 @@ protected static $all_ajaxloader=array();
 		   public function set_OpzioniQRY($db,$qry='',$registra=true) {
 				$this->qry=$qry;
 				$db=myAdoDBAdapter::getAdapter($db);
+				$opzioni=array();
 				IF (isset($_SESSION['myFields']['MyOpzioniRegistrate'][sha1(serialize($this->qry))]) && $registra)
 												{$this->opzioni=$_SESSION['myFields']['MyOpzioniRegistrate'][sha1(serialize($this->qry))];
 												$opzioni=$this->opzioni;
 												}
-								 else {	 
-								     if(is_array($qry)) $v=&$db->getarray($qry[0],$qry[1]);
-								                   else $v=&$db->getarray($qry);
-								         $n=count($v);
-										 for ($i=0;$i<$n;++$i)
-												if (is_array($v[$i])) $opzioni[array_shift($v[$i])]=array_shift($v[$i]);
-
-									  }
+										 else {	 
+										     if(is_array($qry)) $v=&$db->getarray($qry[0],$qry[1]);
+										                   else $v=&$db->getarray($qry);
+										         $n=count($v);
+												 for ($i=0;$i<$n;++$i)
+														if (is_array($v[$i])) $opzioni[array_shift($v[$i])]=array_shift($v[$i]);
+		
+											  }
 				$this->set_Opzioni($opzioni);
 				if ($registra) $this->registra_opzioni();
 				return $this;

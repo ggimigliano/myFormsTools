@@ -4,7 +4,7 @@
  * Contains Gimi\myFormsTools\PckmyFields\myFieldsItaly\myCodiceFiscale.
  */
 
-namespace Gimi\myFormsTools\PckmyFields\myFieldsItaly;
+namespace Gimi\myFormsTools\PckmyFields\PckmyFieldsItaly;
  
 use Gimi\myFormsTools\PckmyArrayObject\myArrayObject;
 use Gimi\myFormsTools\PckmyFields\myText;

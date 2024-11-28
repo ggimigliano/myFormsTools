@@ -4,7 +4,7 @@
  * Contains Gimi\myFormsTools\PckmyFields\myFieldsItaly\myCognome.
  */
 
-namespace Gimi\myFormsTools\PckmyFields\myFieldsItaly;
+namespace Gimi\myFormsTools\PckmyFields\PckmyFieldsItaly;
 
 
  

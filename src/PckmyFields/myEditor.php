@@ -161,7 +161,7 @@ class myEditor  extends myText {
 
 
 		  /** @ignore*/
-		  	 public function set_MyType($nome) {$this->MyType=$nome; return $this;}
+			 public function set_MyType($nome) {  $nome[0]=strtolower($nome[0]);$this->MyType=$nome; return $this;}
 
 
 		  /**

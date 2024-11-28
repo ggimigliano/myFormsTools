@@ -162,7 +162,7 @@ protected $separatore_decimali='.',$SalvaInfo=43000;
      if	($this->ParametriAutomatici)
      	foreach ($this->ParametriAutomatici as $id=>$val)
 	        {
-	        	if ($val['TIPO']=='DATE')  $this->ParametriAutomatici[$id]['MYTYPE']='MyDate';
+	        	if ($val['TIPO']=='DATE')  $this->ParametriAutomatici[$id]['MYTYPE']='Date';
 	         }
 		}
 

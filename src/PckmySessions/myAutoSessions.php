@@ -24,7 +24,7 @@ abstract class myAutoSessions {
 							   				  'myAPCUSessions'=>array(),
 							                  'myAPCSessions'=>array(),
 							   				  'myWincacheSessions'=>array(),
-							   				  'myMemcacheInternalCache'=>array('127.0.0.1:11211'),
+							   				  'myMemcacheSessions'=>array('127.0.0.1:11211'),
 											  'myFileSessions'=>array()
 											 )
 							 ){
@@ -33,7 +33,8 @@ abstract class myAutoSessions {
 	               		    'myapcsessions'=>array('apc_cache_info'),
     			    		'myzendsessions'=>array('zend_shm_cache_store'),
 							'mywincachesessions'=>array('wincache_ucache_info'),
-							'myMemcacheInternalCache'=>array('memcache','memcached')
+							'mymemcachesessions'=>array('memcache','memcached'),
+							'myfilesessions'=>array('fopen')
 							);
 		   	foreach ($options as $class=>&$pars) {
 		   			$class=strtolower($class);
@@ -43,7 +44,7 @@ abstract class myAutoSessions {
 		   					 if(!$ok) continue;	
 		   					}
 		   					
-					$rc = new \ReflectionClass($class);
+					$rc = new \ReflectionClass("Gimi\\myFormsTools\\PckmySessions\\$class");
 		   			$obj=$rc->newInstanceArgs(array_merge(array($procedura) , (array) $pars));
 		   			if($obj->is_available()) return $obj;
  					unset($obj);unset($rc);

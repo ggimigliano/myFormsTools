@@ -56,7 +56,7 @@ class myRAMStream {
 	
 	public static function formatStorage($prefix=''){
 		if(!$prefix) static::$vars=array();
-				else static::$vars[$prefix]=array();
+			    else static::$vars[$prefix]=array();
 	}
 	
 	 public function __call($f,$a) { }

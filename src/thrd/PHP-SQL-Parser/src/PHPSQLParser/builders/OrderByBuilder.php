@@ -41,7 +41,6 @@
 
 namespace PHPSQLParser\builders;
 use PHPSQLParser\exceptions\UnableToCreateSQLException;
-use PHPSQLParser\utils\ExpressionType;
 
 /**
  * This class implements the builder for the ORDER-BY clause. 

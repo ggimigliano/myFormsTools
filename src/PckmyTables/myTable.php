@@ -693,7 +693,10 @@ $jQuery,$sortJquery,$opzioniOrdJquery,$cssJquery,$opzioneOrdine,$zebra,$arrayCol
 	 	 $rigahtml='';
 		 foreach ($colonne as &$j) {
 	 	   						$tag=$this->ricalcola_TAG($i,$j,'TD');
-	 	   						if($tag!==false) $rigahtml.='<td headers="colonna_'.$j.'" '.$tag.'>'.($usa_ricalcola_cella?$this->ricalcola_cella($i,$j):$this->valori[$i][$j]).'</td>';
+	 	   						if($tag!==false) 
+	 	   							$rigahtml.='<td headers="colonna_'.$j.'" '.$tag.'>'.
+	 	   										($usa_ricalcola_cella?$this->ricalcola_cella($i,$j):
+	 	   												(isset($this->valori[$i][$j])?$this->valori[$i][$j]:'')).'</td>';
 	 	   					}
 
 	 	 $ric_tr=&$this->ricalcola_TAG($i,$j,'TR');
