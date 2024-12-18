@@ -35,11 +35,7 @@ class myJQAutocomplete extends myJQueryMyField {
 protected    $campo_output='',$function='',$campi_input=array(),$clean_term
 	, $chiudi=array(),$modalita='post'
 	, $valori_input=array('normali'=>array(),'js'=>array()),$scroll=null,$sorgente,$hmax,$css_font_default='{font-size:11px}',$css_font_class=array('.ui-autocomplete')
-	, $filtroDefault="function (elemento,digitato)
-                             {
-                                if (typeof elemento === 'string') return digitato=='' || strtolower(elemento).indexOf(strtolower(digitato))==0;
-                                                             else return digitato=='' || strtolower(elemento.label).indexOf(strtolower(digitato))==0;
-                             }";
+	, $filtroDefault=null;
 	
 	/**
 	 * @ignore
@@ -101,6 +97,7 @@ protected    $campo_output='',$function='',$campi_input=array(),$clean_term
      */
 	public function set_source($source,$campo='',$valori=array(),$valorijs=array()){
 		$this->sorgente=$source;
+		if(is_string($this->sorgente) && !$this->filtroDefault) $this->filtroDefault="function (elemento,digitato) { return true; }";
 		$this->set_campo_output($campo);
 	  	$this->valori_input['normali']=$valori;
     	$this->valori_input['js']=$valorijs;
@@ -189,7 +186,12 @@ protected    $campo_output='',$function='',$campi_input=array(),$clean_term
 		foreach ($this->css_font_class as $class)  $open->opzioni['css'].=self::get_add_style($class.$this->css_font_default,true);
 		                  
 	    $jq=self::$identificatore;
-	   
+	    if(!$this->filtroDefault) $this->filtroDefault="function (elemento,digitato)
+                             {
+                                if (typeof elemento === 'string') return digitato=='' || strtolower(elemento).indexOf(strtolower(digitato))==0;
+                                                             else return digitato=='' || strtolower(elemento.label).indexOf(strtolower(digitato))==0;
+                             }";
+	    
 		if (is_string($this->sorgente))
 					{
 					 $this->campi_input=myJQAutocompleteUtilsStatic::estrai_ids($this->campi_input);
@@ -210,6 +212,7 @@ protected    $campo_output='',$function='',$campi_input=array(),$clean_term
 											array($this->sorgente,
 												  $parametri,	
 									        	  "function(data,status,info){
+																	
 					 							  					var i=0;
 					 							  					var req=request.term;
 											                        var idx=trim('{$istanza}|'+{$parametri_cache}+'|'+trim(''+request.term));
@@ -218,6 +221,7 @@ protected    $campo_output='',$function='',$campi_input=array(),$clean_term
                                                                        (data.charAt(0)=='{' && data.charAt(data.length-1)=='}')) //is xhtml 
                                                                               { 
                                                                                if(!info.responseJSON) data=eval('(' + data + ')');
+																				
                                                                                {$jq}.each(data, function(label, value)
 									        	  								 					{
                                                                                                      if (typeof label === 'number' && !isNaN(label)) label=value;  
@@ -267,7 +271,7 @@ protected    $campo_output='',$function='',$campi_input=array(),$clean_term
 					            else  foreach ($this->sorgente as $v)     $info["'".addslashes($v)."'"]=$v;
 					$this->set_event('open'," MyMappa_{$istanza}=". self::encode_array($info) ,'chiavi');
 					
-				   if(!$associativo)  
+				    if(!$associativo)  
 					        $this->source="function( request, response ) {
 									{$this->clean_term}
 									if(request.term.length<{$this->JQVar()}('{$this->get_id()}').autocomplete('option','minLength'))

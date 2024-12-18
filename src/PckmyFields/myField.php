@@ -747,7 +747,7 @@ var keycode;
   */
   public function set_value($valore) {
   $val=array();
-  if (is_array($valore)) foreach ($valore as $v) $val[]=stripslashes($v);
+  if (is_array($valore)) foreach ($valore as $v) $val[]=stripslashes((string)$v);
   					else{ $valore=(string) $valore;
   						  if(trim((string) $valore)==='') $val='';
 							else $val=stripslashes(trim((string) $valore));

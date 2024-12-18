@@ -571,8 +571,8 @@ protected $dominiFake=array(
                                      $mx=$rc=array();
                       				 if($this->restrizioni_check[1]) 
                       				  	 			  {//richiesto specificatamente mx
-                      				   			      $mx=@dns_get_record($dominio,DNS_MX+DNS_A);
-                      				   			      if(is_array($mx)) 
+                      				  	 			  $mx=@dns_get_record($dominio,DNS_MX+DNS_A+DNS_SOA);
+                      				   			      if(is_array($mx) && $mx) 
                       				   			            {
                       				   			             foreach ($mx as $rc) if($rc['type']=='MX') $valido=true;
                       				   			             if(!$valido && count($mx)==1) $valido=true;

@@ -52,22 +52,21 @@ protected static $modalita,$istanza=false;
 	
 	
    public static function error_handler($errno , $errstr, $errfile , $errline ){
-	 if((error_reporting() & $errno)===0) return;
+  	 if((error_reporting() & $errno)===0) return;
 	 switch ($errno) {
-	 case E_WARNING:
-	 if(preg_match('@Declaration of .+ should be compatible with@',$errstr)) return;
-	 $err="WARNING";
-	 break;
-	 case E_NOTICE: $err="NOTICE";break;
-	 case E_DEPRECATED: $err="DEPRECATED";break;
-	 case E_ERROR: $err="ERROR";break;
-	 case E_STRICT: $err="STRICT";break;
-	 default:return;
-	 }
+					 case E_WARNING:
+					 if(preg_match('@Declaration of .+ should be compatible with@',$errstr)) return;
+					 $err="WARNING";
+					 break;
+					 case E_NOTICE: $err="NOTICE";break;
+					 case E_DEPRECATED: $err="DEPRECATED";break;
+					 case E_ERROR: $err="ERROR";break;
+					 case E_STRICT: $err="STRICT";break;
+					 default:return;
+					 }
 	 $err=ucfirst(strtolower($err));
-	 if (intval(ini_get("display_errors"))===1 || 
-	 strtolower(ini_get("display_errors"))=='on') echo "<br /><b>$err:</b> $errstr in <b>$errfile</b> on line <b>$errline</b><br />\n";
- if (ini_get('log_errors')) error_log("$err: $errstr in $errfile on line $errline\n" );
+	 if (intval(ini_get("display_errors"))===1 ||  strtolower(ini_get("display_errors"))=='on') echo "<br /><b>$err:</b> $errstr in <b>$errfile</b> on line <b>$errline</b><br />\n";
+ 	 if (ini_get('log_errors')) error_log("$err: $errstr in $errfile on line $errline\n" );
  
 	}
 	

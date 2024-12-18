@@ -18,9 +18,12 @@ protected $valore,$parametri,$campo,$utf8=false,$json=false;
 	 **/
 	   public function __construct() {
 	  	$this->parametri=$_POST;
-	 	$parametri = each($_POST);
-		$this->campo=$parametri['key'];
-		$this->valore=$parametri['value'];
+	  	foreach ($this->parametri as $k=>$v)
+	  									if(!is_array($v)) {
+												$this->campo=$k;
+												$this->valore=$v;
+												break;
+											  	}
 		if (is_array($this->valore)) $this->valore=array_pop(array_values($this->valore));
 		foreach ($this->parametri as &$info)
 		                  if(is_array($info)){$info['desc']=stripslashes($info['desc']);
@@ -53,8 +56,9 @@ protected $valore,$parametri,$campo,$utf8=false,$json=false;
 	  * @ignore
 	  */
      final function __destruct(){
+     	$corpo='';
      	if ($opzioni=$this->Calcolo())
-     		    {if ($_GET['chiudi']) $corpo="<li id=\"".myTag::htmlentities($this->valore)."\" style='text-align:center' >$_GET[chiudi]</li>";
+     		    {if (isset($_GET['chiudi'])) $corpo="<li id=\"".myTag::htmlentities($this->valore)."\" style='text-align:center' >$_GET[chiudi]</li>";
      		      if($this->utf8) {
      		      		$new=array();
 				 		foreach ($opzioni as $testo=>&$valore) 

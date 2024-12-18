@@ -122,7 +122,7 @@ protected static $cacheQuotati=array(),$check_f5=true;
 	   protected static function is_f5(){
 	   		 static $is_f5;
 	   		 if(!self::$check_f5) return false;
-	   		 if($is_f5===null && is_array($_SESSION)) {
+	   		 if($is_f5===null && isset($_SESSION)) {
 	   		 				$s=new mySessions('myFormsStatus');
 	   		 				$is_f5=($s->get('last_status')==mySecurizer::getInstance('myFormsStatus',$s)->checksum_user_sent());
 	   		 				if(!$is_f5) $s->dels();

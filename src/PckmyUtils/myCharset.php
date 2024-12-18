@@ -60,19 +60,21 @@ abstract class myCharset
     public static function  &utf8_rdecode( $item,$anche_chiavi=false){
      if($item===null) return $item;	
         elseif(is_string($item)) $item=static::utf8_decode($item);
-            elseif(is_array($item)) foreach (array_keys($item) as $k)
-                                             if(!$anche_chiavi)  $item[$k]=static::utf8_decode($item[$k],false);
-                                                            else {$K=static::utf8_decode($k);
-                                                                  $item[$K]=static::utf8_rdecode($item[$k],true);
-                                                                  unset($item[$k]);
-                                                                  }
-                                      
+        	elseif(is_array($item))  {if(!$anche_chiavi) foreach (array_keys($item) as $k)  $item[$k]=static::utf8_decode($item[$k],false);
+        									       else {$new=array();
+		        									     foreach (array_keys($item)  as $k){
+		        									       		 		  $new[static::utf8_decode($k)]=static::utf8_decode($item[$k],false);
+		                                                           		  unset($item[$k]);
+		                                                           		  }
+		                                                  $item=&$new;
+        												}
+        							 }
                     elseif(is_object($item))  foreach ( (new \ReflectionObject($item))->getProperties(\ReflectionProperty::IS_PUBLIC) as $prop)
                                                             if(!$anche_chiavi)  $item->$k=static::utf8_decode($item->$k,false);
                                                                             else{   $k= $prop->getName();
                                                                                     $K=static::utf8_decode($k);
-                                                                                    $item->$K=static::utf8_rdecode($item->$k,true);
-                                                                                    unset($item->$k);
+                                                                                    @$item->$K=static::utf8_rdecode($item->$k,true);
+                                                                                    if(strcmp($k, $K)!=0) unset($item->$k);
                                                                                 }
     return $item;
     }

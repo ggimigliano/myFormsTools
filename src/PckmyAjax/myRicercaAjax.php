@@ -32,7 +32,7 @@ use Gimi\myFormsTools\PckmyJQuery\PckmyFields\myJQAutocomplete;
  * </code>
  */
 	
-class myRicercaAjax extends _myRicercaAjax  {
+class myRicercaAjax extends myRicercaAjaxModel  {
 
     	/**
     	 *
