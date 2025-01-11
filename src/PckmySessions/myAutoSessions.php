@@ -19,25 +19,24 @@ namespace Gimi\myFormsTools\PckmySessions;
 	
 abstract class myAutoSessions {
 	 public static function get_Istanza($procedura,
-							   $options=array(
-											  'myZendSessions'=>array(),
-							   				  'myAPCUSessions'=>array(),
-							                  'myAPCSessions'=>array(),
-							   				  'myWincacheSessions'=>array(),
-							   				  'myMemcacheSessions'=>array('127.0.0.1:11211'),
-											  'myFileSessions'=>array()
-											 )
-							 ){
+										   $options=array(
+														  'myZendSessions'=>array(),
+										   				  'myAPCUSessions'=>array(),
+										                  'myAPCSessions'=>array(),
+										   				  'myWincacheSessions'=>array(),
+										   				  'myMemcacheSessions'=>array('127.0.0.1:11211'),
+														  'myFileSessions'=>array()
+														 )
+										 ){
 			$test_fun=array(
-						    'myapcusessions'=>array('apcu_cache_info'),
-	               		    'myapcsessions'=>array('apc_cache_info'),
-    			    		'myzendsessions'=>array('zend_shm_cache_store'),
-							'mywincachesessions'=>array('wincache_ucache_info'),
-							'mymemcachesessions'=>array('memcache','memcached'),
-							'myfilesessions'=>array('fopen')
+						    'myAPCUSessions'=>array('apcu_cache_info'),
+	               		    'myAPCSessions'=>array('apc_cache_info'),
+    			    		'myZendSessions'=>array('zend_shm_cache_store'),
+							'myWincacheSessions'=>array('wincache_ucache_info'),
+							'myMemcacheSessions'=>array('memcache','memcached'),
+							'myFileSessions'=>array('fopen')
 							);
 		   	foreach ($options as $class=>&$pars) {
-		   			$class=strtolower($class);
 		   			if(isset($test_fun[$class])) 
 		   					{$ok=false;
 		   				  	 foreach ($test_fun[$class] as $nome) if(is_callable($nome) || class_exists($nome,false)) {$ok=true;break;}

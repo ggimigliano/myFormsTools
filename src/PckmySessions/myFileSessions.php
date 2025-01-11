@@ -9,7 +9,7 @@ namespace Gimi\myFormsTools\PckmySessions;
 
 
 
-use Gimi\myFormsTools\PckmyFields\myField;
+
 
 /**
  * Analoga alle mySessions nei metodi ma diversa nel funzionamento.

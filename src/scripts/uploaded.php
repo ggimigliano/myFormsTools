@@ -1,5 +1,9 @@
 <?
-include_once(__DIR__.'/../../vendor/autoload.php');
+
+include_once(__DIR__.'/../PckmyFields/myTag.php');
+include_once(__DIR__.'/../PckmyFields/myField.php');
+include_once(__DIR__.'/../PckmyFields/mySelect.php');
+include_once(__DIR__.'/../PckmyFields/myUploadText.php');
 
 
 use Gimi\myFormsTools\PckmyFields\myUploadText;
