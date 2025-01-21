@@ -419,7 +419,7 @@ protected static $cacheQuotati=array(),$check_f5=true;
 
 */
     	$chiavi_valorizzato=count($this->chiavi);
-    
+    	$tipo='';
 		if ($InfTable)
 			foreach ($InfTable as $key=>&$fld)
 			  // if (count($this->colonne)==0 || isset($this->colonne[$key]))
@@ -523,7 +523,7 @@ protected static $cacheQuotati=array(),$check_f5=true;
 		
 	//
 		if ($this->chiavi) $this->chiavi=array_flip(array_flip($this->chiavi));
-	    if (!count($this->chiavi)) $this->chiavi=$INFO['PK'];
+		if (isset($INFO['PK']) &&!count($this->chiavi)) $this->chiavi=$INFO['PK'];
 		$this->set_chiavi($this->chiavi);
 	 	//echo "<pre>"; print_r($this->ParametriAutomatici);
 
@@ -581,6 +581,7 @@ protected static $cacheQuotati=array(),$check_f5=true;
 	 public function CambiaTipoCampo($nome_campo,$myTipo) {
 		 $nome_campo=strtoupper($nome_campo);
 	  	 if ($this->istanziati) {echo "Impossibile cambiare tipo di $nome_campo in $myTipo perchè i campi sono giè stati istanziati o tabella DB non è stata caricata";exit;}
+	  	 if(strpos($myTipo,'\\')===false) $myTipo="\\Gimi\\myFormsTools\\PckmyFields\\{$myTipo}";
 	     $this->ParametriAutomatici[$nome_campo]['MYTYPE']=$myTipo;
 	     if (isset($this->ParametriAutomatici[$nome_campo]['TIPO']) &&  !preg_match('/enum|set/i',$this->ParametriAutomatici[$nome_campo]['TIPO'])) unset($this->ParametriAutomatici[$nome_campo]['TIPO']);
 	     if (preg_match('/multi|radio|select|check|date/i',$this->ParametriAutomatici[$nome_campo]['MYTYPE']))
@@ -1062,8 +1063,7 @@ protected static $cacheQuotati=array(),$check_f5=true;
 	  		 $classe=$val['MYTYPE'];
 	  		 if(strpos($classe,'\\')===false &&
 	  		 	stripos($classe,'my')===0 &&
-	  		 	!class_exists($classe) &&
-	  		 		class_exists("Gimi\\myFormsTools\\PckmyFields\\$classe")) $classe="Gimi\\myFormsTools\\PckmyFields\\$classe";
+	  		 	class_exists("Gimi\\myFormsTools\\PckmyFields\\$classe")) $classe="Gimi\\myFormsTools\\PckmyFields\\$classe";
 	  		 $campo=new $classe($id,null);
 
 	   		 $this->add_campo($campo,'',true);

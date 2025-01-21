@@ -6,8 +6,9 @@
 namespace Gimi\myFormsTools\PckmyOffice;
 
 
-use Gimi\myFormsTools\PckmyUtils\myMultiParter;
+
 use Gimi\myFormsTools\PckmyUtils\myRAMStream;
+use Gimi\myFormsTools\PckmyMime\myMultiParter;
 
 
 

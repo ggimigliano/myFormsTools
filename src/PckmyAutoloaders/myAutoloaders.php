@@ -91,15 +91,8 @@ protected static $modalita,$istanza=false;
 	    $istanza=myAutoloader::get_Istanza($percorso);
 		$istanza->set_debug(self::$modalita);
 		$istanza->auto_refresh((self::$modalita?0:1));
-		$istanza->add_percorso(dirname(__FILE__),array(realpath(dirname(__FILE__).'/scripts/build_ibans.php'),
-		                                               realpath(dirname(__FILE__).'/scripts/calendar.php'),
-		                                               realpath(dirname(__FILE__).'/scripts/uploaded.php')
-		                                              ),1,0)
-		        ->add_percorso(dirname(__FILE__).'/../myDeprecated')
-           		->add_percorso(dirname(__FILE__).'/thrd/myImap')
-        	    ->add_percorso(dirname(__FILE__).'/thrd/phpmailer',array(),1);
 		
-	   if (!defined('__MYFORM_DATACACHE__')) 
+	    if (!defined('__MYFORM_DATACACHE__')) 
 	                                       {define('__MYFORM_DATACACHE__',dirname(__FILE__).'/../datacache');
                                             if (!is_dir(__MYFORM_DATACACHE__)) mkdir(__MYFORM_DATACACHE__,0770,true);
                                            }

@@ -250,7 +250,10 @@ class myAutoloader{
 //die( self::$istanza->get_dir());
  	self::$unloaded[]=$classe;
  	$file=self::$istanza->get_dir().'/Unloaded_'.sha1(serialize(array_keys(self::$istanza->get_indici()))).'.txt';
- 	if(!is_file($file) && isset($_SERVER['REQUEST_URI'])) self::file_put_contents($file,"{$_SERVER['REQUEST_URI']}\n",FILE_APPEND);
+ 	if(!is_file($file) && isset($_SERVER['REQUEST_URI'])) 
+ 				{
+ 					self::file_put_contents($file,"{$_SERVER['REQUEST_URI']}\n",FILE_APPEND);
+ 				}
  	self::file_put_contents($file,"$classe\n",FILE_APPEND);
  }
  

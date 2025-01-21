@@ -179,10 +179,12 @@ protected  $SalvaInfo=43200;
 
 
 	 public function MetaForeignKeys()
-	 {  $prec=$this->con->SetFetchMode(ADODB_FETCH_NUM);
+	 {  
+	 	#$this->con->debug=1;
+	 	$prec=$this->con->SetFetchMode(ADODB_FETCH_NUM);
 		 	$rs=$this->con->execute("SHOW CREATE TABLE {$this->tabella}");
 	 	$this->con->SetFetchMode($prec);
-
+	 	if(!isset($rs->fields[1])) return array();
 	 	$create=explode('FOREIGN KEY',$rs->fields[1]);
 	 	unset($create[0]);
 		$f_k=array();
