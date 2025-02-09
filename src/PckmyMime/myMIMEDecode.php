@@ -5,7 +5,7 @@ use Gimi\myFormsTools\PckmyUtils\PHP8;
 
 
 
-class myMIMEDecode{
+class myMimeDecode{
 	
 	    /**
 	     * The raw email to decode
@@ -181,7 +181,7 @@ class myMIMEDecode{
 	       if($rule($parts)) return $parts;
 	       if(!isset($parts->parts) && $parts->body && 
 	           ($parts->ctype_primary=='message' || $parts->ctype_primary=='multipart' ))
-                                               {$mime=new myMIMEDecode($parts->body);
+                                               {$mime=new myMimeDecode($parts->body);
                     	                        $parts=$mime->decode(array('include_bodies'=>true,'decode_bodies'=>true,'decode_headers'=>true),false);
                     	                        unset($parts->body);
                     	                      }
@@ -294,7 +294,7 @@ class myMIMEDecode{
 	
 	                case 'message/rfc822':
 	                    if($recursive) {
-            	                    $obj = new myMIMEDecode($body,true);
+            	                    $obj = new myMimeDecode($body,true);
             	                    $return->parts[] = $obj->decode(array('include_bodies'=>$this->_include_bodies,
                                                 	                        'decode_bodies' =>$this->_decode_bodies,
                                                 	                        'decode_headers'=>$this->_decode_headers

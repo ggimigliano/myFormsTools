@@ -110,9 +110,9 @@ $appletParameters = array(
 );
 
 // for htaccess protected folders
-if ((isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_USER'] != '') && $_SERVER['PHP_AUTH_USER'] != '' && $_SERVER['PHP_AUTH_USER'] != '')
+if ((isset($_SERVER["REMOTE_USER"]) && $_SERVER["REMOTE_USER"] != '') && $_SERVER["REMOTE_USER"] != '' && $_SERVER["REMOTE_USER"] != '')
 {
-	$appletParameters['specificHeaders'] = 'Authorization: Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ":" . $_SERVER['PHP_AUTH_PW']);
+	$appletParameters['specificHeaders'] = 'Authorization: Basic ' . base64_encode($_SERVER["REMOTE_USER"] . ":" . $_SERVER['PHP_AUTH_PW']);
 }
 
 //
