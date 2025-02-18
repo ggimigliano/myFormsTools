@@ -27,7 +27,7 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
 	 */
 	protected $JQ,$myTable,
 	$opzioni,$nFiltri=0,$copyLanguage='',
-	 $dichiarazione,$on=array(),
+	 $dichiarazione,$on=array(),$responsive_actions=array(),
 	 $scriptRange,$Labels=array(),$hiddenBeforeLoading=false,
 	 $testiLabel=array('legenda'=>'Filtri','cerca'=>'Cerca','da'=>'Da','a'=>'A'),
 	 $funzioni,$language,$dizionario,$rowReordering,$temaJQUI=false;
@@ -146,7 +146,20 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
         /*parent::add_code("{$this->JQ}('{$this->get_id()}').dataTable().rowReordering()");
         return;
         */
-	  
+	 
+	 	if($this->responsive) 
+	 		$this->on['responsive-display.dt']="function(e, datatable, row, showHide, update) {
+																				if(showHide==true) {
+																										
+																							$('ul[data-dtr-index=\"'+row.index()+'\"]').find('[data-dt-column]').
+																									each(
+																										function (a,b){  
+																													     $(b).find('.dtr-data').html($('{$this->get_id()} tbody tr').eq($(b).data('dt-row')).find('td').eq($(b).data('dt-column')).html());
+																													  }
+																										);
+																				 }
+													       			  }";
+	 	
     	if($this->rowReordering!==null && !$this->ordering) 
 		                          {$this->ordering=true;
 		                           parent::add_code("var cols=[];
@@ -168,9 +181,9 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
 		if($this->copyLanguage) $this->opzioni['language']=substr($this->opzioni['language'],0,-1).','.
 		                                                       substr(self::encode_array($this->copyLanguage),1) ;
 		$codice=" {$this->myJQVarName()}= {$this->JQ}('{$this->get_id()}').dataTable(".self::quote($this->opzioni).")";
-		if(isset(	$this->funzioni['set_filtri']) && 	$this->funzioni['set_filtri']) $codice.="\n;{$this->myJQVarName()}_filters.setDatatable({$this->myJQVarName()});";
 		if($this->rowReordering!==null)    $codice.=".rowReordering(".($this->rowReordering?self::quote($this->rowReordering,'{}'):'').")";
 		foreach ($this->on as $evt=>$code) $codice.=".on('$evt',$code)";
+		if(isset(	$this->funzioni['set_filtri']) && 	$this->funzioni['set_filtri']) $codice.="\n;{$this->myJQVarName()}_filters.setDatatable({$this->myJQVarName()});";
 		parent::add_code($codice,-1);
 		
 	}
@@ -926,9 +939,9 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
      return $funzione;
 	}
 	
-	 public function set_responsive(){
+	 public function set_responsive($pars=array()){
 	    $this->add_extension_src('Responsive');
-	    $this->responsive=array( 'details'=>true);
+	    $this->responsive=array_merge(array( 'details'=>true),$pars);
 	}
 
 	 public function set_hidden_beforeLoading($status=true){
@@ -1000,7 +1013,7 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
         	                             }
         	                            
 	           }
-	          
+	  
 	   $html=parent::get_html();
 	   $m=array();
 	   preg_match_all('@<script.+</script>@SsUi', $html,$m);

@@ -1,0 +1,23 @@
+{
+    "sEmptyTable":     "C?dv?ld? heç bir m?lumat yoxdur",
+    "sInfo":           " _TOTAL_ N?tic?d?n _START_ - _END_ Aras? N?tic?l?r",
+    "sInfoEmpty":      "N?tic? Yoxdur",
+    "sInfoFiltered":   "( _MAX_ N?tic? ?çind?n Tap?lanlar)",
+    "sInfoPostFix":    "",
+    "sInfoThousands":  ",",
+    "sLengthMenu":     "S?hif?d? _MENU_ N?tic? Göst?r",
+    "sLoadingRecords": "Yükl?nir...",
+    "sProcessing":     "Gözl?yin...",
+    "sSearch":         "Axtar??:",
+    "sZeroRecords":    "N?tic? Tap?lmad?.",
+    "oPaginate": {
+        "sFirst":    "?lk",
+        "sLast":     "Ax?r?nc?",
+        "sNext":     "Sonraki",
+        "sPrevious": "Önc?ki"
+    },
+    "oAria": {
+        "sSortAscending":  ": sütunu artma s?ras? üz?r? aktiv etm?k",
+        "sSortDescending": ": sütunu azalma s?ras? üz?r? aktiv etm?k"
+    }
+}

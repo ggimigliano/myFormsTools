@@ -1,0 +1,17 @@
+{
+    "sProcessing":   "Provádím...",
+    "sLengthMenu":   "Zobraz záznam? _MENU_",
+    "sZeroRecords":  "Žádné záznamy nebyly nalezeny",
+    "sInfo":         "Zobrazuji _START_ až _END_ z celkem _TOTAL_ záznam?",
+    "sInfoEmpty":    "Zobrazuji 0 až 0 z 0 záznam?",
+    "sInfoFiltered": "(filtrováno z celkem _MAX_ záznam?)",
+    "sInfoPostFix":  "",
+    "sSearch":       "Hledat:",
+    "sUrl":          "",
+    "oPaginate": {
+       "sFirst":    "První",
+       "sPrevious": "P?edchozí",
+       "sNext":     "Další",
+       "sLast":     "Poslední"
+    }
+}

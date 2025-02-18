@@ -80,7 +80,8 @@ class myJQDialog extends myJQueryUI {
              if(!$this->resizable) $this->resizable=false;
              if(!isset($this->closeOnEscape)) $this->closeOnEscape=true;
              
-             if(!$this->title) {$f=new MyField();
+             if(!isset($this->opzioni['title'])) 
+             					{$f=new MyField();
                                  $this->title=(($f->get_dizionario() && $f->get_dizionario()->trasl('Attenzione')?$f->get_dizionario()->trasl('Attenzione'):'Attenzione'));
                                  }
              
