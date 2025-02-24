@@ -16,6 +16,7 @@ use Gimi\myFormsTools\PckmyJQuery\PckmyFields\myJQDatepicker;
 use Gimi\myFormsTools\PckmyJQuery\PckmyFields\myJQInputMask;
 use Gimi\myFormsTools\PckmyTables\myTable;
 use Gimi\myFormsTools\PckmyUtils\myCharset;
+use Gimi\myFormsTools\PckmyJQuery\Pckgeneric\myJQDialog;
                                                 
 class myJQDataTable extends myJQuery implements myJQmyTable{
     /**
@@ -146,18 +147,18 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
         /*parent::add_code("{$this->JQ}('{$this->get_id()}').dataTable().rowReordering()");
         return;
         */
-	 
-	 	if($this->responsive) 
+	 if($this->responsive && 
+	 	  !isset($this->on['responsive-display.dt'])) 
 	 		$this->on['responsive-display.dt']="function(e, datatable, row, showHide, update) {
-																				if(showHide==true) {
-																										
-																							$('ul[data-dtr-index=\"'+row.index()+'\"]').find('[data-dt-column]').
-																									each(
-																										function (a,b){  
-																													     $(b).find('.dtr-data').html($('{$this->get_id()} tbody tr').eq($(b).data('dt-row')).find('td').eq($(b).data('dt-column')).html());
-																													  }
-																										);
-																				 }
+			if(update==true) {
+									
+						$('ul[data-dtr-index=\"'+row.index()+'\"]').find('[data-dt-column]').
+								each(
+									function (a,b){  
+												     $(b).find('.dtr-data').html($('{$this->get_id()} tbody tr').eq($(b).data('dt-row')).find('td').eq($(b).data('dt-column')).html());
+												  }
+									);
+			 }
 													       			  }";
 	 	
     	if($this->rowReordering!==null && !$this->ordering) 
@@ -315,8 +316,8 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
 	public function set_classe_evidenziatore($classe='highlighted'){
 		$this->sortClasses= false;
 		$this->add_code("{$this->JQ}('{$this->get_id()}  tr').hover( function(){ {$this->JQ}(this).find('td').addClass('{$classe}' );	},
-																	 function(){ {$this->JQ}(this).find('td.{$classe}').removeClass('{$classe}' );	}
-																	);"
+ function(){ {$this->JQ}(this).find('td.{$classe}').removeClass('{$classe}' );	}
+);"
 		);
 		return $this;
 	}
@@ -683,7 +684,7 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
 	
 	
 	 public function set_on($evt,$action) {
-	    $this->on[$evt]=$action;
+	 	$this->on[$evt]=$action;
 	    return $this;
 	}
 	
@@ -939,9 +940,69 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
      return $funzione;
 	}
 	
-	 public function set_responsive($pars=array()){
+	/**
+	 * 
+	 * @param array|bool $modal se false non è modale se è un array pieno indica le colonne da mostrare
+	 * @param array $pars
+	 */
+	public function set_responsive($modal=array(),$pars=array()){
 	    $this->add_extension_src('Responsive');
 	    $this->responsive=array_merge(array( 'details'=>true),$pars);
+	    if($modal!==false) {
+	    	
+	    	$this->add_code(myCSS::get_css_jscode("#myDialogDataTableResponsive table th{text-align:right!important;display:table-cell!important}
+    						                       #myDialogDataTableResponsive table td{text-align:left!important;display:table-cell!important}",true));
+	    	if($modal) $cond="if( [".implode(',',$modal)."].indexOf(key)!=-1 )";
+	    		  else $cond='';
+	    	self::add_common_code("
+									$(document).on(\"dialogopen\", \".ui-dialog-content\", function() {
+									      	  $('.myDataTableResponsiveDiv').not(this).dialog('close');
+									    });
+								  ");	 
+	    	$this->set_on('responsive-display.dt',
+	    			"function(e, datatable, row, showHide, update) {
+							if(showHide==true && update==false) {    
+								if($('.ui-dialog-content:visible .myDataTableResponsiveDiv').length>0) return;
+								let intestazione=getNumeriColonna($(row.column(row.index()).header()).parent(),'th');
+								let riga=getNumeriColonna($(row.node()),'td');
+								$('ul[data-dtr-index=\"'+row.index()+'\"]').parent().parent().hide();
+								let tabout ='<table class=\"display dataTable\" style=\"width:auto!important;margin:auto!important\">';
+								Object.entries(intestazione).forEach(([key, value]) => {
+												{$cond}  tabout+='<tr scope=\"row\">'+value+riga[key]+'</tr>';
+											});
+								tabout+='</table>';
+								let parser = new DOMParser();
+								let doc = parser.parseFromString(tabout, 'text/html');
+								
+								$('.myDataTableResponsiveDiv').dialog('destroy').remove();
+			    			
+
+								doc.querySelectorAll('script').forEach(function(script) {
+									    script.remove();
+									});
+			    			
+								$($(row.node()).find('td:visible')[0]).trigger('click');
+							    let newDialog = $('<div class=\"myDataTableResponsiveDiv\">')
+							        .attr('id', 'myDialogDataTableResponsive') // Imposta un ID
+							        .html(doc.body.innerHTML) // Imposta il contenuto
+							        .appendTo('body'); // Aggiungi il div al body
+			    				 
+								
+			    				 newDialog.dialog({
+							        autoOpen: true,
+							        modal: false,
+									draggable:true,
+									resizable:true,
+									width:$('body').width()*0.99,
+									position: {my: 'center bottom-'+$($(row.node()).find('td:visible')[0]).height()/2, of: $($(row.node()).find('td:visible')[0]) },
+			    					close:function(){ $('#myDialogDataTableResponsive').remove(); },
+            						focus:function(){ 
+														if($('.ui-dialog-content:visible').not('.myDataTableResponsiveDiv').length>0) $('.myDataTableResponsiveDiv').dialog('close');
+													 }
+							    });
+			    			}
+						 } ");
+	    			}
 	}
 
 	 public function set_hidden_beforeLoading($status=true){
@@ -951,6 +1012,26 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
 	
 	 public function get_html(){
 	  	 $rotella='';
+	  	 self::add_common_code(' 
+				function getNumeriColonna (nodo_tr,tipo_cella){
+ 						let columnIndex = 1; // Indice iniziale della colonna
+						let columnMap = {};
+						nodo_tr.each(
+								function () {
+									  $(this).children(tipo_cella).each(
+														function () {
+											            // Salta eventuali colonne già occupate da colspan precedenti
+											            while (columnMap[columnIndex])  columnIndex++;
+											
+											            let colspan = parseInt($(this).attr("colspan")) || 1;
+											            columnMap[columnIndex] = this.outerHTML // Solo il contenuto senza <td>
+											
+											            // Salta le colonne coperte dal colspan
+											            columnIndex += colspan;
+											     		});
+									  });
+						return columnMap;	
+					}');
 	      if($this->hiddenBeforeLoading) { 
 	                                    if(strtolower(myJQueryUI::get_tema())=='redmond') $tema='redmond';
 		                                                                             else $tema='base';
@@ -1017,7 +1098,7 @@ class myJQDataTable extends myJQuery implements myJQmyTable{
 	   $html=parent::get_html();
 	   $m=array();
 	   preg_match_all('@<script.+</script>@SsUi', $html,$m);
-	   return (new myJQDatepicker('')).(new myJQInputMask('')).str_replace($m[0],'',$html).
+	   return (new myJQDatepicker('')).(new myJQInputMask('')).(new myJQDialog('')).str_replace($m[0],'',$html).
 	                               "<script type='text/javascript'>
 	                                               //<!--
 	                                               $rotella; 

@@ -545,7 +545,7 @@ protected static $all_ajaxloader=array();
 							  }
 							  
 						      if ($default && count($this->opzioni)>=1)
-								 {if (strlen($default)==1) $default=str_pad('', $maxlen , $default);
+								 {if (strlen($default)==1) $default=str_pad('', $maxlen-1 , $default);
 								  $opz=$this->build_colgroup('', $default,'<').
 								            "<option value='' $attributi_opzione selected=\"selected\">$default</option>".
 								       $this->build_colgroup('', $default,'>').
