@@ -105,7 +105,7 @@ class myImap extends myImapMail {
 		 public function get_mail($msg,$uid=null,$params=array('include_bodies'=>true,
 				'decode_bodies'=>true,
 				'decode_headers'=>true)){
-				$mp=new myMIMEDecode($this->get_message($msg,$uid),"\r\n");
+				$mp=new myMimeDecode($this->get_message($msg,$uid),"\r\n");
 				return $mp->decode($params);
 		}
 		
