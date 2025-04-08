@@ -13,10 +13,11 @@ abstract class myCharset
         static::$charset=$charset;
     }
     
-    public static function &onlyReadableASCII($string) {
+    public static function &onlyReadableASCII($string,$interpunzione=true) {
         $out='';
         for ($i=0;$i<strlen($string);$i++)
-            if(ord($string[$i])>=32 && ord($string[$i])<=126 ) $out.=$string[$i];
+        	if( ($interpunzione && in_array($string[$i], [9,10,13])) ||
+            	(ord($string[$i])>=32 && ord($string[$i])<=126 )) $out.=$string[$i];
         return $out;
     }
     
@@ -24,7 +25,7 @@ abstract class myCharset
     	if($string===null || $string==='') return $string;
         if(class_exists('UConverter',false))   return self::utf8_encode_intl($string);
         if(is_callable('mb_convert_encoding')) return self::utf8_encode_mb($string);
-        if(is_callable('iconv'))              return self::utf8_encode_iconv($string);
+        if(is_callable('iconv'))               return self::utf8_encode_iconv($string);
         return self::utf8_encode_std($string);
     }
     

@@ -91,14 +91,14 @@ class ArrayDB  implements ArrayAccess, Iterator,Countable
 	// Implementazione di ArrayAccess
 	public function offsetExists(mixed $offset): bool
 	{
-		if (key_exists($offset,$this->data)) return true;
+		if (isset($this->data[$offset])) return true;
 		// Carica il record se esiste nel database
 		return $this->loadRecord($offset) !== null;
 	}
 	
 	public function offsetGet(mixed $offset): mixed
 	{
-		if (!key_exists($offset,$this->data)) $this->loadRecord($offset);
+		if (!isset($this->data[$offset])) $this->loadRecord($offset);
 		return $this->data[$offset];
 	}
 	
