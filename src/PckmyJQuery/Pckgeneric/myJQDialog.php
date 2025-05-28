@@ -80,11 +80,6 @@ class myJQDialog extends myJQueryUI {
              if(!$this->resizable) $this->resizable=false;
              if(!isset($this->closeOnEscape)) $this->closeOnEscape=true;
              
-             if(!isset($this->opzioni['title'])) 
-             					{$f=new MyField();
-                                 $this->title=(($f->get_dizionario() && $f->get_dizionario()->trasl('Attenzione')?$f->get_dizionario()->trasl('Attenzione'):'Attenzione'));
-                                 }
-             
              if($this->html) {
                                  if($this->icona)  $this->html="<img src=\"{$this->icona}\" style=\"float:left;padding-right:8px\"/>".trim((string) $this->html).'<br style="clear:both" />';
                                  $id=substr($this->get_id(),1);

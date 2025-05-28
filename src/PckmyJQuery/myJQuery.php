@@ -77,9 +77,9 @@ class myJQuery {
 	
 	static function  isMSIE($forza=''){
 	    $m=array();
-		if(preg_match('/MSIE ([0-9\.]+)/',$_SERVER['HTTP_USER_AGENT'],$m) && $forza)   self::$isIE=$forza;
+	    if(isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/MSIE ([0-9\.]+)/',$_SERVER['HTTP_USER_AGENT'],$m) && $forza)   self::$isIE=$forza;
 		if(self::$isIE) return self::$isIE;
-		if(preg_match('/MSIE ([0-9\.]+)/',$_SERVER['HTTP_USER_AGENT'],$m)) return self::$isIE=$m[1];
+		if(isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/MSIE ([0-9\.]+)/',$_SERVER['HTTP_USER_AGENT'],$m)) return self::$isIE=$m[1];
 		return false;
 	}
 

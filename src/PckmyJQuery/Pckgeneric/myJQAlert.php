@@ -19,9 +19,10 @@ class myJQAlert extends myJQDialog {
  }
  
   public function get_html(){
- if(!is_array($this->buttons)) {$f=new myField();
-                                 $this->set_testo_ok(($f->get_dizionario() && $f->get_dizionario()->trasl('Chiudi')?$f->get_dizionario()->trasl('Chiudi'):'Chiudi'));
-                                 }
- return myJQDialog::get_html(); 
+  	$dizionario=(new myField())->get_dizionario();
+  	if(!isset($this->title) ) $this->title=($dizionario && $this->trasl('Attenzione')) ?$this->trasl('Attenzione'):'Attenzione';
+  	if(!is_array($this->buttons)) $this->set_testo_ok( ($dizionario && $dizionario->trasl('Chiudi')?$dizionario->trasl('Chiudi'):'Chiudi'));
+                                
+   return myJQDialog::get_html(); 
  }
 }

@@ -32,7 +32,6 @@ class myJQMyFormDialog extends myJQDialog{
 		$this->modal=true;
 		$this->draggable=false;
 		$this->resizable=false;
-		$this->title=$this->form->trasl('Attenzione');
 		$this->buttons=array(array(
        						 'text'=>"Ok",
         					 'click'=>"function() { ".self::$identificatore."(this).dialog(\"close\"); }"
