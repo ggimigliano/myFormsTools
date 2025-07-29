@@ -22,7 +22,8 @@ abstract class myCharset
     }
     
     public static function  utf8_encode($string){
-    	if($string===null || $string==='') return $string;
+    	if($string===null || $string==='' || self::is_utf8($string)) return $string;
+    	
         if(class_exists('UConverter',false))   return self::utf8_encode_intl($string);
         if(is_callable('mb_convert_encoding')) return self::utf8_encode_mb($string);
         if(is_callable('iconv'))               return self::utf8_encode_iconv($string);
@@ -30,7 +31,7 @@ abstract class myCharset
     }
     
     public static function  utf8_decode($string){
-    	if($string===null || $string==='') return $string;
+    	if($string===null || $string==='' || !self::is_utf8($string)) return $string;
         if(class_exists('UConverter',false))   return self::utf8_decode_intl($string);
         if(is_callable('mb_convert_encoding')) return self::utf8_decode_mb($string);
         if(is_callable('iconv'))               return self::utf8_decode_iconv($string);
@@ -152,6 +153,82 @@ abstract class myCharset
     private static  function utf8_encode_iconv($string){
         return   iconv(self::$charset, 'UTF-8', $string);
     }
+    
+    
+        
+    
+    /**
+     * Metodo con mb_check_encoding (accurato e veloce)
+     */
+    private static function utf8_check_mb(string $str): bool
+    {
+    	return mb_check_encoding($str, 'UTF-8');
+    }
+    
+    /**
+     * Metodo con iconv (secondo per affidabilità)
+     */
+    private static function utf8_check_iconv(string $str): bool
+    {
+    	return $str === @iconv('UTF-8', 'UTF-8//IGNORE', $str);
+    }
+    
+    /**
+     * Metodo con IntlChar (richiede intl, ma non mbstring!)
+     */
+    private static function utf8_check_intl(string $str): bool
+    {
+    	if (!class_exists(\IntlChar::class, false)) return false;
+    	
+    	$len = strlen($str);  // byte-length
+    	$i = 0;
+    	while ($i < $len) {
+    		$charLen = 1;
+    		$ord = ord($str[$i]);
+    		if ($ord >= 0xF0) $charLen = 4;
+    		elseif ($ord >= 0xE0) $charLen = 3;
+    		elseif ($ord >= 0xC0) $charLen = 2;
+    		
+    		$char = substr($str, $i, $charLen);
+    		if (!\IntlChar::isvalidcodepoint(\IntlChar::ord($char))) {
+    			return false;
+    		}
+    		
+    		$i += $charLen;
+    	}
+    	return true;
+    }
+    
+    /**
+     * Metodo standard migliorato con preg_match e json_encode
+     */
+    private static function utf8_check_std(string $str): bool
+    {
+    	return @preg_match('//u', $str) === 1 && json_encode([$str]) !== false;
+    }
+    
+    /**
+     * Entry point: restituisce true se la stringa è UTF-8 valida
+     */
+    public static function is_utf8(string $str): bool
+    {
+    	if ($str === '' || $str === null) return true;
+    	
+    	if (function_exists('mb_check_encoding')) {
+    		return self::utf8_check_mb($str);
+    	}
+    	
+    	if (function_exists('iconv')) {
+    		return self::utf8_check_iconv($str);
+    	}
+    	
+    	if (class_exists(\IntlChar::class, false)) {
+    		return self::utf8_check_intl($str);
+    	}
+    	
+    	return self::utf8_check_std($str);
+    }
+    
     
   
 }
