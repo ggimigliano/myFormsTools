@@ -75,7 +75,7 @@ class myFormAJAXRequest extends myJQDialog {
         if(!$this->attesa)
              { if(strtolower(myJQueryUI::get_tema())=='redmond') $tema='redmond';
                                                             else $tema='base';
-               $this->attesa="<div style='text-align:center'><img src='/".myField::get_MyFormsPath()."icone/spinner/$tema.gif' style='width:50%' /></div>";
+               $this->attesa="<div style='text-align:center'><img src='/".myField::get_MyFormsPath()."icone/spinner/$tema.gif' alt='Attendere prego...' style='width:50%' /></div>";
             }
         $this->modal=true;
         $this->autoOpen=false;

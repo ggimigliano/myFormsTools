@@ -8,8 +8,7 @@ namespace Gimi\myFormsTools\PckmyJQuery\Pckgeneric;
 
 
 use Gimi\myFormsTools\PckmyJQuery\myJQuery;
-use Gimi\myFormsTools\PckmyJQuery\myJQueryUI;
-use Gimi\myFormsTools\PckmyFields\myField;
+use Gimi\myFormsTools\PckmyJQuery\myJQueryUI; 
                                                 
 class myJQDialog extends myJQueryUI {
  

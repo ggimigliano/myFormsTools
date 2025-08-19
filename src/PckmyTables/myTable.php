@@ -120,8 +120,8 @@ $jQuery,$sortJquery,$opzioniOrdJquery,$cssJquery,$opzioneOrdine,$zebra,$arrayCol
          if(!$jqdt) $jqdt=new myJQDataTable('#'.$this->get_id(),$dom);
          $evento=$this->get_ajax_par_name();
          $this->JQDt=$this->add_myJQuery($jqdt);
-         $this->JQDt->set_traduzione("loadingRecords",'<div style="text-align:center"><img src="/'.self::get_MyFormsPath().'icone/spinner/redmond.gif" style="min-width:50px"></div>');
-         $this->JQDt->set_traduzione("processing",'<div style="text-align:center"><img src="/'.self::get_MyFormsPath().'icone/spinner/redmond.gif" style="min-width:50px"></div>');
+         $this->JQDt->set_traduzione("loadingRecords",'<div style="text-align:center"><img src="/'.self::get_MyFormsPath().'icone/spinner/redmond.gif" alt="Attendere prego..." style="min-width:50px"></div>');
+         $this->JQDt->set_traduzione("processing",'<div style="text-align:center"><img src="/'.self::get_MyFormsPath().'icone/spinner/redmond.gif" alt="Attendere prego..." style="min-width:50px"></div>');
          $this->JQDt->paging=true;
          $this->JQDt->info=true;
          $this->JQDt->deferRender=true;

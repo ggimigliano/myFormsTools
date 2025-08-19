@@ -21,9 +21,45 @@ private $Register=array(),$Rewind=false,$Estop=-1,$EMsession,$Events=array(),$Ep
 /* @ignore */
 private static $myEventManagerStatus=array(),$metodiEstratti=array();
 
-
+		
+		private function onStartsFor($where,$start){
+			 $ord=$par=null;
+			 if(strpos($where, $start)===0)
+						{
+						 $p=explode('§', substr($where,strlen($start)).'§');
+						 if(count($p)>1 && is_numeric($p[count($p)-2]))
+							 	{   
+							 		$ord=$p[count($p)-2];
+							 		array_pop($p);
+							 	}
+						  array_pop($p);
+					 	  if(isset($p[0]) && $p[0]!='')
+						  		  {
+								 	$par=implode('§',$p);
+								  }
+								 
+						 return array('ord'=>$ord,'par'=>$par);
+						}
+			return null;
+		}
+		
+		
+		private function addEvent($p,$metodo, $val){
+			if(!$p['par']) 
+						$this->addEventFunction(function()   {return  true;},
+											$metodo->name,
+											array(),
+											max(0,!isset($p['ord'])?0:intval($p['ord']))
+											);
+			   	   else $this->addEventFunction(function()  {return true;},
+											$metodo->name,
+											array(&$val) ,
+											max(1,!isset($p['ord'])?0:intval($p['ord']))
+											);
+					
+		}
 	
-	   public function __construct(){//NO Final sovrascritto in myForms
+	   public function __construct(){ 
 	    $classe= get_class($this);
 	 	if(!isset(self::$myEventManagerStatus[spl_object_hash($this)])) self::$myEventManagerStatus[spl_object_hash($this)]=new \ArrayObject(array('class'=>$classe),\ArrayObject::ARRAY_AS_PROPS);
 	 	if(!isset(self::$metodiEstratti[get_class($this)])) {
@@ -32,45 +68,28 @@ private static $myEventManagerStatus=array(),$metodiEstratti=array();
                                                     	 	}
 		
 		$p=array();
-		foreach (self::$metodiEstratti[$classe] as &$metodo) {
-			
-				if(preg_match('/^onGET(§([0-9]+))?$/U',$metodo->name,$p))  
-						$this->addEventFunction(function(){return  count($_GET);},
-        										$p[0],
-        										array(),
-        										max(0,!isset($p[2])?null:intval($p[2]))
-        										);
-				elseif(preg_match('/^onPOST(§([0-9]+))?$/U',$metodo->name,$p))  
-						$this->addEventFunction(function() {return count($_POST);},
-										$p[0],
-										array(),
-										max(0,!isset($p[2])?null:intval($p[2]))
-										);		
-				elseif(preg_match('/^onSESSION(§([0-9]+))?$/U',$metodo->name,$p))
-						$this->addEventFunction(function(){return count($_SESSION);},
-											$p[0],
-											array(),
-											max(0,!isset($p[2])?null:intval($p[2]))
-											);				
-				elseif(preg_match('/^onGET([A-Za-z0-9_§]+)(§([0-9]))?$/U',$metodo->name,$p))  
-						$this->addEventFunction(function() use ($p) {return isset($_GET[$p[1]]);},
-										$p[0],
-										!isset($_GET[$p[1]])?array():array($_GET[$p[1]]),
-										max(1,!isset($p[3])?null:intval($p[3]))
-										);
+		 
+		foreach (self::$metodiEstratti[$classe] as &$metodo) 
+			if(strpos($metodo->name, 'on')===0)
+				{
+				$p=$this->onStartsFor($metodo->name,'onGET');
+				if($p && isset($_GET) && count($_GET)>0 ) $this->addEvent($p, $metodo, ($p['par'] && isset($_GET[$p['par']]))? $_GET[$p['par']]:null);
 				
-				elseif(preg_match('/^onPOST([A-Za-z0-9_§]+)(§([0-9]))?$/U',$metodo->name,$p))  
-						$this->addEventFunction(function() use ($p) {return isset($_POST[$p[1]]);},
-										$p[0],
-										!isset($_POST[$p[1]])?array():array($_POST[$p[1]]),
-										max(1,!isset($p[3])?null:intval($p[3]))
-										);	
-				elseif(preg_match('/^onSESSION([A-Za-z0-9_§]+)(§([0-9]))?$/U',$metodo->name,$p))
-						$this->addEventFunction(function() use ($p) {return isset($_SESSION[$p[1]]);},
-										$p[0],
-										!isset($_SESSION[$p[1]])?array():array($_SESSION[$p[1]]),
-										max(1,!isset($p[3])?null:intval($p[3]))
-										);						
+				$p=$this->onStartsFor($metodo->name,'onPOST');
+				if($p && isset($_POST)  && count($_POST)>0 ) $this->addEvent($p, $metodo,$p['par'] &&  isset($_POST[$p['par']])?$_POST[$p['par']]:null);
+				
+				$p=$this->onStartsFor($metodo->name, 'onSESSION');
+				if($p && isset($_SESSION)  && count($_SESSION)>0) $this->addEvent($p, $metodo,$p['par'] &&  isset($_SESSION[$p['par']])?$_SESSION[$p['par']]:null);
+				
+				$p=$this->onStartsFor($metodo->name,'onNotGET');
+				if($p && (!isset($_GET) || !count($_GET) || ($p['par'] && !isset($_GET[$p['par']])))) $this->addEvent($p, $metodo,true);
+				
+				$p=$this->onStartsFor($metodo->name,'onNotPOST');
+				if($p && (!isset($_POST) || !count($_POST) || ($p['par'] && !isset($_POST[$p['par']])))) $this->addEvent($p, $metodo,null);
+				
+				$p=$this->onStartsFor($metodo->name, 'onNotSESSION');
+				if($p && (!isset($_SESSION) || !count($_SESSION) || ($p['par'] && !isset($_SESSION[$p['par']])))) $this->addEvent($p, $metodo,null);
+				
 				}			 
 						
 	}

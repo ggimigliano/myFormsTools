@@ -21,8 +21,8 @@ abstract class myCharset
         return $out;
     }
     
-    public static function  utf8_encode($string){
-    	if($string===null || $string==='' || self::is_utf8($string)) return $string;
+    public static function  utf8_encode($string,$forza=false){
+    	if($string===null || $string==='' || (!$forza && self::is_utf8($string))) return $string;
     	
         if(class_exists('UConverter',false))   return self::utf8_encode_intl($string);
         if(is_callable('mb_convert_encoding')) return self::utf8_encode_mb($string);
@@ -30,8 +30,8 @@ abstract class myCharset
         return self::utf8_encode_std($string);
     }
     
-    public static function  utf8_decode($string){
-    	if($string===null || $string==='' || !self::is_utf8($string)) return $string;
+    public static function  utf8_decode($string,$forza=false){
+    	if($string===null || $string==='' || (!$forza && !self::is_utf8($string))) return $string;
         if(class_exists('UConverter',false))   return self::utf8_decode_intl($string);
         if(is_callable('mb_convert_encoding')) return self::utf8_decode_mb($string);
         if(is_callable('iconv'))               return self::utf8_decode_iconv($string);
