@@ -32,7 +32,7 @@ class myFormAJAXRequest extends myJQDialog {
         return 'noMyFormAjax';
     }
      public static function isAJAXCall(){
-        return key_exists('HTTP_X_REQUESTED_WITH',$_SERVER) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest"   ;
+        return (key_exists('HTTP_X_REQUESTED_WITH',$_SERVER) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest") ;
     }
     
      public static function send_message($message,$code,$utf8encode=null,$isLocked=false){

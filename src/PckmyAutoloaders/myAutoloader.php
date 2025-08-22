@@ -179,7 +179,7 @@ class myAutoloader{
  
 /** @ignore */
   public static function scrivi_file($file,$info) {
-     $f=basename(get_called_class()).'_'.md5($file);
+     $f=basename(str_replace('\\','/',get_called_class())).'_'.md5($file);
  	 $testo='<'."? namespace Gimi\myFormsTools\PckmyAutoloaders; abstract class $f{static function get_paths(){return ".var_export($info,1)."; }}?".'>';
  	 if(!self::file_write($file,$testo)) return;
  }

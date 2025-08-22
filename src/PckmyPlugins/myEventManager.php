@@ -44,18 +44,21 @@ private static $myEventManagerStatus=array(),$metodiEstratti=array();
 		}
 		
 		
-		private function addEvent($p,$metodo, $val){
+		private function addEvent($p,$startsFor,$metodo, $val){
 			if(!$p['par']) 
 						$this->addEventFunction(function()   {return  true;},
 											$metodo->name,
 											array(),
 											max(0,!isset($p['ord'])?0:intval($p['ord']))
 											);
-			   	   else $this->addEventFunction(function()  {return true;},
+				  elseif($val !==null && $metodo->name=="{$startsFor}{$p['par']}") 
+				  			{
+				  			 $this->addEventFunction(function()  {return true;},
 											$metodo->name,
 											array(&$val) ,
 											max(1,!isset($p['ord'])?0:intval($p['ord']))
 											);
+				  		  }
 					
 		}
 	
@@ -73,22 +76,22 @@ private static $myEventManagerStatus=array(),$metodiEstratti=array();
 			if(strpos($metodo->name, 'on')===0)
 				{
 				$p=$this->onStartsFor($metodo->name,'onGET');
-				if($p && isset($_GET) && count($_GET)>0 ) $this->addEvent($p, $metodo, ($p['par'] && isset($_GET[$p['par']]))? $_GET[$p['par']]:null);
+				if($p && isset($_GET) && count($_GET)>0 ) $this->addEvent($p, 'onGET',$metodo, ($p['par'] && isset($_GET[$p['par']]))? $_GET[$p['par']]:null);
 				
 				$p=$this->onStartsFor($metodo->name,'onPOST');
-				if($p && isset($_POST)  && count($_POST)>0 ) $this->addEvent($p, $metodo,$p['par'] &&  isset($_POST[$p['par']])?$_POST[$p['par']]:null);
+				if($p && isset($_POST)  && count($_POST)>0 ) $this->addEvent($p, 'onPOST',$metodo,$p['par'] &&  isset($_POST[$p['par']])?$_POST[$p['par']]:null);
 				
 				$p=$this->onStartsFor($metodo->name, 'onSESSION');
-				if($p && isset($_SESSION)  && count($_SESSION)>0) $this->addEvent($p, $metodo,$p['par'] &&  isset($_SESSION[$p['par']])?$_SESSION[$p['par']]:null);
+				if($p && isset($_SESSION)  && count($_SESSION)>0) $this->addEvent($p, 'onSESSION', $metodo,$p['par'] &&  isset($_SESSION[$p['par']])?$_SESSION[$p['par']]:null);
 				
 				$p=$this->onStartsFor($metodo->name,'onNotGET');
-				if($p && (!isset($_GET) || !count($_GET) || ($p['par'] && !isset($_GET[$p['par']])))) $this->addEvent($p, $metodo,true);
+				if($p && (!isset($_GET) || !count($_GET) || ($p['par'] && !isset($_GET[$p['par']])))) $this->addEvent($p,'onNotGET', $metodo,true);
 				
 				$p=$this->onStartsFor($metodo->name,'onNotPOST');
-				if($p && (!isset($_POST) || !count($_POST) || ($p['par'] && !isset($_POST[$p['par']])))) $this->addEvent($p, $metodo,null);
+				if($p && (!isset($_POST) || !count($_POST) || ($p['par'] && !isset($_POST[$p['par']])))) $this->addEvent($p, 'onNotPOST',$metodo,null);
 				
 				$p=$this->onStartsFor($metodo->name, 'onNotSESSION');
-				if($p && (!isset($_SESSION) || !count($_SESSION) || ($p['par'] && !isset($_SESSION[$p['par']])))) $this->addEvent($p, $metodo,null);
+				if($p && (!isset($_SESSION) || !count($_SESSION) || ($p['par'] && !isset($_SESSION[$p['par']])))) $this->addEvent($p,'onNotSESSION', $metodo,null);
 				
 				}			 
 						
