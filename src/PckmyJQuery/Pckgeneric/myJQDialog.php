@@ -66,7 +66,7 @@ class myJQDialog extends myJQueryUI {
 	 * @param html/string $testo
 	 */
 	public function set_html($html){
-	 $this->html=(str_replace(array('\'',"\n","\r","\t",'/'),array('\\\'',' ',' ',' ','\/'),str_replace('\\','\\\\',$html)));
+	 $this->html=trim((str_replace(array('\'',"\n","\r","\t",'/'),array('\\\'',' ',' ',' ','\/'),str_replace('\\','\\\\',$html))));
 	 return $this;
 	}
 	
@@ -74,24 +74,24 @@ class myJQDialog extends myJQueryUI {
 
 	
   public function prepara_codice(){
+  			
              if(!isset($this->modal)) $this->modal=true;
-             if(!$this->autoOpen) $this->autoOpen=false;
-             if(!$this->resizable) $this->resizable=false;
+             if(!isset($this->autoOpen)) $this->autoOpen=false;
+             if(!isset($this->resizable)) $this->resizable=false;
              if(!isset($this->closeOnEscape)) $this->closeOnEscape=true;
-             
+              
              if($this->html) {
-                                 if($this->icona)  $this->html="<img src=\"{$this->icona}\" style=\"float:left;padding-right:8px\"/>".trim((string) $this->html).'<br style="clear:both" />';
+                                 if($this->icona)  $this->html="<img src=\"{$this->icona}\" style=\"float:left;padding-right:8px\"/>{$this->html}<br style=\"clear:both\" />";
                                  $id=substr($this->get_id(),1);
                                  if(strpos( $this->html,'<div')!==false ||
                                      strpos( $this->html,'<p')!==false ||
                                      strpos( $this->html,'<table')!==false) $tag='div';
                                      else $tag='span';
-                                     $this->add_code(self::$identificatore."('body').append('<$tag id=\"{$id}\" style=\"display:none\">$this->html</$tag>');",-1);
+                                 $this->add_code(self::$identificatore."('body').append('<$tag id=\"{$id}\" style=\"display:none\">{$this->html}</$tag>');",-1);
                              }
              if($this->modal) {if(!$this->open) $this->open='function(){}';
                              $this->open="function (type, data) { {$this->JQvar()}('.ui-dialog').css('z-index', ".(static::$max_z_index+1).");  {$this->JQvar()}('.ui-widget-overlay').css('z-index', ".(static::$max_z_index).");  ({$this->open}) (type, data); }";
                              }
- 
- parent::prepara_codice();
+             parent::prepara_codice();
  }
 }

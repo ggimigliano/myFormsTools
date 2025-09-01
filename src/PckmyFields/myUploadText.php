@@ -20,7 +20,7 @@ use Gimi\myFormsTools\PckmyArrayObject\myArrayObject;
 	
 class myUploadText extends myField {
 /** @ignore */
-protected $blank='',$remove_chk,$uuid,$file,$ext_ammesse=array(), $descrizione,  $extra,$show_info=array(true,true,true),$download_script=false,$ext,$bodyFile;
+	protected $molteplicita=array('min'=>0,'max'=>0),$blank='_blank',$remove_chk,$uuid,$curFile=0,$file=array(),$ext_ammesse=array(), $descrizione,  $extra,$show_info=array(true,true,true),$download_script=false,$ext,$bodyFile;
 /** @ignore */
 protected static $sessione,$maxGlobal;
 /**
@@ -59,6 +59,16 @@ protected static $sessione,$maxGlobal;
 			     $this->set_value($valore);
 			}
 
+		/**
+		 * 
+		 * @param int $min
+		 * @param int $max
+		 * @throws \Exception
+		 */
+		  public function set_molteplicita($min,$max){
+	
+			    throw new \Exception('set_molteplicita inapplicabile per questo tipo oggetto');
+			}
 
 		/**
 		 * Imposta l'estensione di default per il file
@@ -115,7 +125,7 @@ protected static $sessione,$maxGlobal;
 
 
 		  /**
-	* Restituisce la dimensione max file Uploadato
+			* Restituisce la dimensione max file Uploadato
 		  *  @return integer
 		  */
 	    public function get_max() {
@@ -136,11 +146,11 @@ protected static $sessione,$maxGlobal;
 		   * @ignore
 		   */
 		   public function __get($attributo){
-		  	 return $this->file;
+		   	return isset($this->file[$this->curFile])?$this->file[$this->curFile]:null;
 		  }
 
 		  /**
-	* Restituisce la dimensione max file Uploadato
+			* Restituisce la dimensione max file Uploadato
 		  *  @return integer
 		  */
 
@@ -155,7 +165,7 @@ protected static $sessione,$maxGlobal;
 		  *  @return string
 		  */
 		  protected function get_errore_diviso_singolo() {
-		      if(isset($this->file['reloaded'])) return;
+		      if(isset($this->file[$this->curFile]['reloaded'])) return;
 		      if(isset($_POST[$this->get_remove_check()->get_name()]))
 		  					{ 
 		  					  if($this->notnull)   return ' non può essere nullo';
@@ -164,39 +174,38 @@ protected static $sessione,$maxGlobal;
 		  					  return;
 		  					}
 		  	   
-		  	    if (isset($this->myFields['FILES'][$this->get_name().'_file']['name'])) 
-		  	   							  $this->file=$this->myFields['FILES'][$this->get_name().'_file'];
-		  	   						
-		  	   						//	  echo '<pre>'.$this->get_name();	print_r($this->myFields['FILES']);echo '</pre>';
-		  	    if (!$this->file && $this->get_value()) return;
-		  	    if (isset($this->file['error']) && 
-		  	              $this->file['error']>=1 &&
-				  		  $this->file['error']<=2)  {/*$this->remove_session();*/ return array(' non può essere più grande di %1%bytes',self::ricalcolasize($this->maxlength,true,1));}
-				 elseif (isset($this->file['error']) && 
-				         $this->file['error']>2) {/*$this->remove_session();*/	 return ' non inviato correttamente';}
-				   elseif (!isset($this->file['size']) || $this->file['size']==0) 
-				                                        {
-						 								if ($this->notnull) return ' deve essere allegato';
-						 							    }
-					 elseif(isset($this->file['name'])){
-						     $v=array_reverse(explode('.',strtolower($this->file['name'])));
-						     $ext=null;
-		 					 foreach (array_keys($this->ext_ammesse) as $estensione) {
-                                                		 					 	 $estensione=array_reverse(explode('.',strtolower($estensione)));
-                                                		 					 	 foreach ($estensione as $i=>$pe) if($pe!=$v[$i]) continue (2);
-                                                		 					 	 $ext=implode(".",array_reverse($estensione));
-                                                		 					 	 break;
-                                                							 }
-
-						  	 if ($this->ext_ammesse && !$ext){/*$this->remove_session();*/ return array(' non è accettabile, estensioni ammesse: %1%',implode(',',array_flip($this->ext_ammesse)));}
-						  	 if ($this->maxlength && $this->get_size()>$this->maxlength){/*$this->remove_session();*/ return array(' non può essere più grande di %1%bytes',self::ricalcolasize($this->maxlength));}
-						  	 if ($this->minlength && $this->get_size()<$this->minlength){/*$this->remove_session();*/ return array(' non può essere più piccolo di %1%bytes',self::ricalcolasize($this->minlength));}
-							 if(!$ext) $ext=$v[0];
-
-							 $this->set_ext($ext);
-							 $this->bodyFile=@file_get_contents($this->myFields['FILES'][$this->get_name().'_file']['tmp_name']);
-							 		 //$this->storing_session();
-							 }
+				  	    if (isset($this->myFields['FILES'][$this->get_name().'_file']['name'])) 
+				  	   							  $this->file[$this->curFile]=$this->myFields['FILES'][$this->get_name().'_file'];
+				  	   						
+				  	    if (!isset($this->file[$this->curFile]) && $this->get_value()) return;
+				  	    if (isset($this->file[$this->curFile]['error']) && 
+				  	              $this->file[$this->curFile]['error']>=1 &&
+						  		  $this->file[$this->curFile]['error']<=2)  {/*$this->remove_session();*/ return array(' non può essere più grande di %1%bytes',self::ricalcolasize($this->maxlength,true,1));}
+						 elseif (isset($this->file[$this->curFile]['error']) && 
+						         $this->file[$this->curFile]['error']>2) {/*$this->remove_session();*/	 return ' non inviato correttamente';}
+						   elseif (!isset($this->file[$this->curFile]['size']) || $this->file[$this->curFile]['size']==0) 
+						                                        {
+								 								if ($this->notnull) return ' deve essere allegato';
+								 							    }
+							 elseif(isset($this->file[$this->curFile]['name'])){
+								     $v=array_reverse(explode('.',strtolower($this->file[$this->curFile]['name'])));
+								     $ext=null;
+				 					 foreach (array_keys($this->ext_ammesse) as $estensione) {
+		                                                		 					 	 $estensione=array_reverse(explode('.',strtolower($estensione)));
+		                                                		 					 	 foreach ($estensione as $i=>$pe) if($pe!=$v[$i]) continue (2);
+		                                                		 					 	 $ext=implode(".",array_reverse($estensione));
+		                                                		 					 	 break;
+		                                                							 }
+		
+								  	 if ($this->ext_ammesse && !$ext){/*$this->remove_session();*/ return array(' non è accettabile, estensioni ammesse: %1%',implode(',',array_flip($this->ext_ammesse)));}
+								  	 if ($this->maxlength && $this->file[$this->curFile]['size']>$this->maxlength){/*$this->remove_session();*/ return array(' non può essere più grande di %1%bytes',self::ricalcolasize($this->maxlength));}
+								  	 if ($this->minlength && $this->file[$this->curFile]['size']<$this->minlength){/*$this->remove_session();*/ return array(' non può essere più piccolo di %1%bytes',self::ricalcolasize($this->minlength));}
+									 if(!$ext) $ext=$v[0];
+		
+									 $this->set_ext($ext);
+									 $this->bodyFile=@file_get_contents($this->myFields['FILES'][$this->get_name().'_file']['tmp_name']);
+									 		 //$this->storing_session();
+									 }
 		  }
 	
 			   
@@ -205,7 +214,7 @@ protected static $sessione,$maxGlobal;
 		                                      {$valori=@unserialize(@gzuncompress(@base64_decode($valore)));
 		                                       if($valori){$this->bodyFile=&$valori['val'];
                 		                                   $this->ext=&$valori['ext'];
-                		                                   $this->file=array('reloaded'=>true);       
+                		                                   $this->file[$this->curFile]=array('reloaded'=>true);       
                 		                                   return $this;
 		                                                 }
 		                                      }
@@ -237,8 +246,8 @@ protected static $sessione,$maxGlobal;
 		   * @return myArrayObject @see myArrayObject
 		   */
 		   public function get_info_uploaded(){
-		     if(!is_array($this->file)) return $this->file=array();
-		  	 return  new myArrayObject($this->file);
+		     if(!is_array($this->file[$this->curFile])) return $this->file[$this->curFile]=array();
+		  	 return  new myArrayObject($this->file[$this->curFile]);
 		  }
 
 
@@ -260,15 +269,7 @@ protected static $sessione,$maxGlobal;
 	  return array_flip($this->ext_ammesse);
 	}
 
-
-  /**
-	* Restituisce la dimensione del file  Uploadato
-		  *  @return integer
-	*/
-	 public function get_size() {
-		 return $this->file['size'];
-	}
-
+ 
 	
 	 public function get_ext() {
 	    return $this->ext;
@@ -312,7 +313,7 @@ protected static $sessione,$maxGlobal;
 	 * @param boolean $effettiva se true restituisce quella trovata (anche null se non trovata), se true in caso di fallimento restituisce 'application/octet-stream'
 	 * @return string
 	 */	  
-	 public static function get_MymeType($ext,$effettiva=false) {
+	 public static function get_MimeType($ext,$effettiva=false) {
 	    $exts=self::get_MimeTypes();
 	    if($effettiva) return isset($exts[strtolower($ext)])?$exts[strtolower($ext)]:'';
                   else return isset($exts[strtolower($ext)])?$exts[strtolower($ext)]:'application/octet-stream';
@@ -627,12 +628,57 @@ protected static $sessione,$maxGlobal;
               return $out;
 		     }
 	}
+	
+	public function get_download_url($file){
+		$fun=&$this->download_script;
+		if(!$fun || !is_callable($fun)) 
+				$fun=function ($file) 
+							{			 
+								return "/".self::get_MyFormsPath()."scripts/uploaded.php?file=".urlencode(self::ppnEncrypt(serialize($file)));
+							};
+							 
+		return $fun($file);
+	}
 
-
-	 public function set_download_script($percorso){
-	    if(!is_callable($percorso)) $this->download_script=function ($file) use($percorso) {return $percorso;};
-		                       else $this->download_script=$percorso;
+	
+	/**
+	 * passare il codice di una funzione che riceve il l'arrai associativo con le info del file e restituisce l'url per il download
+	 * @param \Closure  $funzione
+	 * @return \Gimi\myFormsTools\PckmyFields\myUploadText
+	 */
+	 public function set_download_script($funzione){
+	 	if(!is_callable($funzione)) $this->download_script=function ($file) use($funzione) {return $funzione;};
+	 							else $this->download_script=$funzione;
 		return $this;
+	}
+	
+	
+	
+	private static function ppkey(){
+		return '$M1y2U3p4èl5o6aç§°d+"';
+	}
+	
+	public static function ppnEncrypt( $data  )
+	{
+		$method = 'aes-256-gcm';
+		$key =hash('sha256', self::ppkey(), true);
+		$iv = openssl_random_pseudo_bytes( openssl_cipher_iv_length( $method ) );
+		$tag = ""; // openssl_encrypt will fill this
+		$result = openssl_encrypt( $data , $method , $key , OPENSSL_RAW_DATA , $iv , $tag , "" , 16 );
+		return base64_encode( $iv.$tag.$result );
+	}
+	
+	
+	public static function ppnDecrypt( $data  )
+	{
+		$method = 'aes-256-gcm';
+		$data = base64_decode( $data );
+		$key =  hash('sha256', self::ppkey(), true);
+		$ivLength = openssl_cipher_iv_length( $method );
+		$iv = substr( $data , 0 , $ivLength );
+		$tag = substr( $data , $ivLength , 16 );
+		$text = substr( $data , $ivLength+16 );
+		return openssl_decrypt( $text , $method , $key , OPENSSL_RAW_DATA , $iv , $tag );
 	}
 	
 	
@@ -675,27 +721,27 @@ protected static $sessione,$maxGlobal;
 	    $this->get_errore_diviso_singolo();
 		$get_html=isset($this->Metodo_ridefinito['get_Html']['metodo'])?$this->Metodo_ridefinito['get_Html']['metodo']:null; if ($get_html!='') return $this->$get_html(isset($this->Metodo_ridefinito['get_Html']['parametri'])?$this->Metodo_ridefinito['get_Html']['parametri']:null);
 		
-		if(!$this->download_script)  $download_script="/".self::get_MyFormsPath()."scripts/uploaded.php";
-                        		else { $fun=&$this->download_script;
-                        		       $download_script=$fun($download_script);
-                        		     }
-		$download_script.=strpos($download_script,'?')===false?'?':'&amp;';
+		
 		
 		if ($this->get_value()) 
 				  { if(!$this->ext) {$exts=static::deduci_ext_da_file($this->get_value());
 				                     $this->ext='';
 				                     foreach ($exts as $ext) if(strlen($ext)>strlen($this->ext)) $this->ext=$ext;
 				                    }
-				//    $this->storing_session();
+				
+				    $this->file[$this->curFile]['fromPOST']=$this->get_name();
+				   
+				    $download_script=$this->get_download_url($this->file[$this->curFile]);
 				    $icona=$this->ext;
 				    $descrizione='';
 					if (!$this->descrizione) $descrizione="Download";
 								  	    else $descrizione=$this->descrizione;
 					$descrizione.=' '.self::ricalcolasize(strlen($this->get_value()))."bytes";
-					$root= dirname(__FILE__).'/MyUploadIcones/';
+					$root= dirname(__FILE__).'/../MyUploadIcones/';
 					if (!is_file("$root$icona.gif")) $icona='folder';
 					$root= "/".self::get_MyFormsPath()."MyUploadIcones/$icona.gif";
-					if ($this->show_info[0])  $icona="{$this->trasl("File attuale")}:<input type='image' onkeydown=\"".myFormAJAXRequest::get_disable_varname()."=true;PredPost=this.form.action;this.form.action='{$download_script}name={$this->get_name()}&amp;ext={$this->ext}&amp;desc=".urlencode((string) $this->descrizione)."'\" onmousedown=\"".myFormAJAXRequest::get_disable_varname()."=true;PredPost=this.form.action;this.form.action='{$download_script}name={$this->get_name()}&amp;ext={$this->ext}&amp;desc=".urlencode((string) $this->descrizione)."'\" onblur='this.form.action;this.form.action=PredPost;".myFormAJAXRequest::get_disable_varname()."=false'  {$this->blank} src='$root' alt=\"".myTag::htmlentities($this->descrizione)."\" title=\"".myTag::htmlentities($descrizione)."\" style='border:0' />&nbsp;";
+					
+					if ($this->show_info[0])  $icona="{$this->trasl("File attuale")}:<input type='image' onkeydown=\"".myFormAJAXRequest::get_disable_varname()."=true;PredPost=this.form.action;this.form.action='{$download_script}'\" onmousedown=\"".myFormAJAXRequest::get_disable_varname()."=true;PredPost=this.form.action;this.form.action='{$download_script}'\" onblur='this.form.action;this.form.action=PredPost;".myFormAJAXRequest::get_disable_varname()."=false'  {$this->blank} src='$root' alt=\"".myTag::htmlentities($this->descrizione)."\" title=\"".myTag::htmlentities($descrizione)."\" style='border:0' />&nbsp;";
 										 else $icona='';
 					if ($this->extra || $icona) $icona.="$this->extra ";
 				}
@@ -712,9 +758,9 @@ protected static $sessione,$maxGlobal;
 		return $this->jsAutotab().$this->send_html("$nofile
                                     				<div id='upl_div_{$this->get_id()}' style='display:inline'>$icona
                                         				<span>
-                                        					".($this->download_script!==false?"":"<input type=\"hidden\" id=\"_{$this->get_id()}\"".$this->stringa_attributi(array('type','title','value','id','accept'),1)." value=\"".(strlen($this->bodyFile)?base64_encode(gzcompress(serialize(array('val'=>&$this->bodyFile,'ext'=>$this->ext)),8)):'')."\" />").
-                                        					"<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".self::$maxGlobal."\" />
-                                        					<input name=\"{$name}\" oninput=\"document.getElementById('_{$this->get_id()}').value=''\" ".$this->stringa_attributi(array('value','name'),1)." />".($this->show_info[1]?"(max&nbsp;".self::ricalcolasize($this->get_max(),true,1)."bytes)":'')."
+                                        					 <input type='hidden'  {$this->stringa_attributi(array('id','type','title','value'),1)} value=\"".base64_encode(gzcompress($this->bodyFile,8))."\">
+                                        					 <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".self::$maxGlobal."\" />
+                                        					 <input name=\"{$name}\" oninput=\"document.getElementById('_{$this->get_id()}').value=''\" ".$this->stringa_attributi(array('value','name'),1)." />".($this->show_info[1]?"(max&nbsp;".self::ricalcolasize($this->get_max(),true,1)."bytes)":'')."
                                         				</span>
                                     				</div>").
                                     				"<script type='text/javascript'>
@@ -724,38 +770,37 @@ protected static $sessione,$maxGlobal;
                         		                      </script>";
 	 }
 	
-	
+	 
+	 
 	
 	
    /** @ignore*/
 	 public function _get_html_show($pars, $null = null, $null2 = NULL){
-	    if(!$this->download_script) $download_script="/".self::get_MyFormsPath()."scripts/uploaded.php";
-	                           else {                     
-	                                $fun=&$this->download_script;
-	                                $download_script=$fun($download_script);
-	                                }
-	    $download_script.=strpos($download_script,'?')===false?'?':'&amp;';
+	    
+	   
 		if ($this->get_value()!='') 
-				  { 
+				  { $this->file[$this->curFile]['fromPOST']=$this->get_name();
+				  	$download_script=$this->get_download_url($this->get_info_uploaded()[$this->curFile]);      
 					$icona=$this->ext;
 					if (!$this->descrizione) $descrizione="Download";
 								  	    else $descrizione=$this->descrizione;
 					$descrizione.=' '.self::ricalcolasize(strlen($this->get_value()))."bytes";
-					$root= dirname(__FILE__).'/MyUploadIcones/';
+					
+					$root= dirname(__FILE__).'/../MyUploadIcones/';
 					if (!is_file("$root$icona.gif")) $icona='folder';
 					$root= "/".self::get_MyFormsPath()."MyUploadIcones/$icona.gif";
-		      		if ($this->show_info[0])  $icona="{$this->trasl("File attuale")}:<input type='image' onkeydown=\"".myFormAJAXRequest::get_disable_varname()."=true;PredPost=this.form.action;this.form.action='{$download_script}name={$this->get_name()}&amp;ext={$this->ext}&amp;desc=".urlencode((string)$this->descrizione)."'\" onmousedown=\"".myFormAJAXRequest::get_disable_varname()."=true;PredPost=this.form.action;this.form.action='{$download_script}name={$this->get_name()}&amp;ext={$this->ext}&amp;desc=".urlencode((string)$this->descrizione)."'\" onblur='this.form.action;this.form.action=PredPost;".myFormAJAXRequest::get_disable_varname()."=false'  {$this->blank} src='$root' alt=\"".myTag::htmlentities($this->descrizione)."\" title=\"".myTag::htmlentities($descrizione)."\" style='border:0' />&nbsp;";
-										else $icona='';
+					
+					 
+		      		if ($this->show_info[0])  $icona="{$this->trasl("File attuale")}:<input type='image' onkeydown=\"".myFormAJAXRequest::get_disable_varname()."=true;PredPost=this.form.action;this.form.action='{$download_script}'\" onmousedown=\"".myFormAJAXRequest::get_disable_varname()."=true;PredPost=this.form.action;this.form.action='{$download_script}'\" onblur='this.form.action;this.form.action=PredPost;".myFormAJAXRequest::get_disable_varname()."=false'  {$this->blank} src='$root' alt=\"".myTag::htmlentities($this->descrizione)."\" title=\"".myTag::htmlentities($descrizione)."\" style='border:0' />&nbsp;";
+										 else $icona='';
 					if ($this->extra || $icona) $icona.="$this->extra ";
 					
 					
 				  }
 	
-		 return "<div id='upl_div_{$this->get_id()}' style='display:inline'>$icona
-                                        				<span>
-                                        					".($this->download_script?"":"<input type=\"hidden\"  ".$this->stringa_attributi(array('type','title','value'),1)." value=\"".(strlen($this->bodyFile)?base64_encode(gzcompress($this->bodyFile,8)):'')."\" />").
-                                        				"</span>
-                                    				</div>";
+			return "<div id='upl_div_{$this->get_id()}' style='display:inline'>$icona
+                                        					<input type='hidden'  {$this->stringa_attributi(array('id','type','title','value'),1)} value=\"".base64_encode(gzcompress($this->bodyFile,8))."\">
+                                        			</div>";
 		}
 	
 	

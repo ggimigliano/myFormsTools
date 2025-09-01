@@ -1,0 +1,173 @@
+/* Stile base per il contenitore principale */
+.myuploader.upload-container {
+    max-width: 800px;
+    margin: 10px auto;
+    text-align: center;
+    float:left;
+}
+
+ 
+
+
+/* Controlli per i pulsanti */
+.myuploader .upload-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+/* Stile comune per i pulsanti */
+.myuploader .btn {
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-transform: uppercase;
+}
+
+.myuploader .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.myuploader .btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
+}
+
+.myuploader .btn-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.myuploader .btn-success:hover {
+    background-color: #1e7e34;
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+}
+
+.myuploader .btn-warning {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.myuploader .btn-warning:hover {
+    background-color: #e0a800;
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
+}
+
+/* Area di trascinamento file */
+.myuploader .drop-zone {
+    border: 2px dashed #6c757d;
+    border-radius: 10px;
+    padding: 10px;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.myuploader .drop-zone.dragover {
+    background-color: #e2e6ea;
+    border-color: #007bff;
+}
+
+.myuploader .drop-zone p {
+    margin: 0;
+  
+    font-size: 1.1em;
+}
+
+/* Tabella dei file caricati */
+.myuploader .file-list-table {
+    width: 100%;
+    margin-top: 5px;
+    border-collapse: collapse;
+}
+
+.myuploader .file-list-table th,
+.myuploader .file-list-table td {
+    
+    border-bottom: 1px solid #e9ecef;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.myuploader .file-list-table th {
+   
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.myuploader .file-list-table tr:hover {
+    background-color: #fafafa;
+}
+
+.myuploader .file-icon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.myuploader .file-name {
+    color: #333;
+    font-weight: bold;
+    word-break: break-all;
+}
+
+
+
+/* Stile per i pulsanti di rimozione */
+.myuploader .remove-btn {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+ 
+
+.myuploader .remove-btn:hover {
+    transform: scale(1.2);
+}
+
+/* Stile per il modale di errore di jQuery UI */
+.ui-dialog.myuploader {
+    border-radius: 12px !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.ui-dialog.myuploader .ui-dialog-titlebar {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 12px 12px 0 0;
+    padding: 15px;
+    font-weight: bold;
+}
+
+.ui-dialog.myuploader .ui-dialog-content {
+    padding: 25px !important;
+    font-size: 1.1em;
+    color: #495057;
+    text-align: center;
+}
+
+.ui-dialog.myuploader .ui-dialog-buttonpane {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    padding: 15px;
+    text-align: center;
+}
+
+/* Media query per la responsività */
+@media (max-width: 600px) {
+    .myuploader.upload-container {
+        padding: 20px;
+    }
+
+    .myuploader .upload-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+}

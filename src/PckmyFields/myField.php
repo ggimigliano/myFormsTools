@@ -265,6 +265,15 @@ public $Richiede_tag_label=true, $Prevede_label=true,$con_js=true,$usaDIV=false,
   	 return $this;
   }
 
+  /**
+   * Restituisce lingua corrente
+   * @return string
+   */
+  public function get_lingua() {
+  	return self::$lingua;
+  }
+  
+  
  /**
   * Aggiunge un dizionario alternativo (da usare solo dopo myForm::set_lingua)
   * @throws \Exception se non usato dopo @see myForm::set_lingua()
@@ -289,6 +298,8 @@ public $Richiede_tag_label=true, $Prevede_label=true,$con_js=true,$usaDIV=false,
       return array_shift($this->get_dizionari());
   }
   		
+  
+  
   
   /**
    *
@@ -766,8 +777,8 @@ var keycode;
    public function set_name($nome,$cambia_id=true) {
 	 if (trim((string) $nome)==='') return $this;
 	 $this->attributi['name']=$nome;
-	 $nome=explode('[',$nome,2);
-	 $nome=$nome[0];
+	 $nome=strstr($nome.'[','[',true);
+	
 	 if(!isset($this->myFields['campo__istanze'][strtolower($nome)])) $this->myFields['campo__istanze'][strtolower($nome)]=0;
 	 if($cambia_id) $this->set_id($nome.(($this->myFields['campo__istanze'][strtolower($nome)])?'_'.$this->myFields['campo__istanze'][strtolower($nome)]:""));
 	 $this->myFields['campo__istanze'][strtolower($nome)]++;

@@ -37,19 +37,19 @@ class myFormAJAXRequest extends myJQDialog {
     
      public static function send_message($message,$code,$utf8encode=null,$isLocked=false){
         if(static::isAJAXCall())
-        { header("myContent-Type: ".($isLocked?'Locked':'Unlocked'));
-          if($code) header("myContent-Code: $code");
-          if(is_array($message)) { header("Content-Type: application/json; charset=utf-8");
-                                   die(json_encode($message));
-                                 }
-        
-        if($utf8encode  ||  myField::get_charset()!='UTF-8' ) $message=myCharset::utf8_encode($message);
-        
-        //  header("Content-Length: ".strlen($message));
-        if($utf8encode) header("Content-Type: text/html; charset=utf-8");
-                   else header("Content-Type: text/html; charset=iso-8859-1");
-        die($message);
-        }
+			        { header("myContent-Type: ".($isLocked?'Locked':'Unlocked'));
+			          if($code) header("myContent-Code: $code");
+			          if(is_array($message)) { header("Content-Type: application/json; charset=utf-8");
+			                                   die(json_encode($message));
+			                                 }
+			        
+			        if($utf8encode  ||  myField::get_charset()!='UTF-8' ) $message=myCharset::utf8_encode($message);
+			        
+			        //  header("Content-Length: ".strlen($message));
+			        if($utf8encode) header("Content-Type: text/html; charset=utf-8");
+			                   else header("Content-Type: text/html; charset=iso-8859-1");
+			        die($message);
+			        }
     }
     
      public static function send_locked_message($message,$utf8encode=null){
@@ -71,7 +71,11 @@ class myFormAJAXRequest extends myJQDialog {
         return $this->myJQVarName();
     }
     
-     public function set_istance_defaults(){
+    
+     
+    
+    public function prepara_codice(){
+    	 
         if(!$this->attesa)
              { if(strtolower(myJQueryUI::get_tema())=='redmond') $tema='redmond';
                                                             else $tema='base';
@@ -79,20 +83,23 @@ class myFormAJAXRequest extends myJQDialog {
             }
         $this->modal=true;
         $this->autoOpen=false;
-        $this->resizable=false;
+        $this->resizable=false;  
         $formId=$this->get_id();
+        
+      
         $id='X'.spl_object_hash($this);
         $this->set_id("#$id");
-        
+       
         $this->set_html($this->attesa);
-        $this->closeOnEscape=false;
-        $this->buttons=array();
+        
+        $this->closeOnEscape=true;
+       
         $extra='';
         foreach ($this->azioni as $k=>$v) $extra.="if(code=='$k') { $v }\n ";
-                                                                    
+                                                             
         $this->add_code("
             {$id}_start=false;
-            {$this->JQvar()}('{$formId} input[type=submit],{$formId} input[type=image]').click(function(){  {$this->JQvar()}('#{$id}_Action').remove(); {$this->JQvar()}('{$formId}').append(\"<input type='hidden' id='{$id}_Action' name='\"+{$this->JQvar()}(this).prop('name')+\"' value='\"+{$this->JQvar()}(this).val()+\"' />\");});
+ 		    {$this->JQvar()}('{$formId} input[type=submit],{$formId} input[type=image]').click(function(){  {$this->JQvar()}('#{$id}_Action').remove(); {$this->JQvar()}('{$formId}').append(\"<input type='hidden' id='{$id}_Action' name='\"+{$this->JQvar()}(this).prop('name')+\"' value='\"+{$this->JQvar()}(this).val()+\"' />\");});
             {$this->jqvar()}('{$formId}').submit(
                     function(event) {
                        try{
@@ -117,10 +124,23 @@ class myFormAJAXRequest extends myJQDialog {
                                                               try{  {$this->myJQVarName()}.dialog('close');  } catch (eee){};
                                                            }
                                     }
-                         if(ajax['contentType']=='multipart/form-data') {
-                                                                         ajax['contentType']=false;
-                                                                         ajax['data']=theForm.serializefiles();
-		                                                                }
+                         if(ajax['contentType']=='multipart/form-data') { 
+																		var finalFormData = new FormData(theForm.get(0));
+  																		$('.myUploaderDD').each(function(){
+																				var uploaderInstance=$(this).data('myUploader');
+		                														var nomeUpload=$('.myUploaderDD').find('input[type=\"file\"]').prop('name');
+		                													    var uploadedFiles = uploaderInstance.getFiles();
+																				var allFiles = uploaderInstance.getFiles();
+																		        var filesToSend = allFiles.filter(file => !file.isServerFile);
+																	         	filesToSend.forEach(file => { finalFormData.append(nomeUpload, file); });
+																		 		});
+																        
+												                    	 ajax['type']= 'POST';
+												                    	 ajax['data']= finalFormData;
+												                    	 ajax['processData']= false; // Evita che jQuery elabori il FormData
+												                    	 ajax['contentType']= false; // Non impostare l'header Content-Type, lo fa il browser per FormData
+												                    	 ajax['enctype']= 'multipart/form-data';
+																		}
 		                                                           else { ajax['data']=theForm.serialize();
 		                                                                  ajax['contentType']='application/x-www-form-urlencoded;charset=UTF-8';
 		                                                                 }
@@ -157,11 +177,12 @@ class myFormAJAXRequest extends myJQDialog {
                                                                 {$id}_start=false;
                                                                 });
                          return false;
-                         }catch (err) {console.log(err);return true;}
+                         } catch (err) { return false;}
                    }
                 );
                 
                  ".myCSS::get_css_jscode("div.ui-dialog {position:fixed;}",true));
+        parent::prepara_codice();                                                        
     }
     
     private function trasl($x){

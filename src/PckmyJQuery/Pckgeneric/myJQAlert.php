@@ -12,9 +12,9 @@ class myJQAlert extends myJQDialog {
  $this->buttons["'".str_replace("'","\\'",$text)."'"]="function(){{$this->JQvar()}( this ).dialog('close');return true;}";
  }
  
-  public function prepara_codice(){ 
- $this->dialogClass="no-close";
- $this->add_common_code($this->get_add_style(".no-close .ui-dialog-titlebar-close{display:none}",true));
+ public function prepara_codice(){ 
+ 	# $this->dialogClass="no-close";
+	# $this->add_common_code($this->get_add_style(".no-close .ui-dialog-titlebar-close{display:none}",true));
  parent::prepara_codice();
  }
  
