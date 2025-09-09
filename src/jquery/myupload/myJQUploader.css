@@ -69,8 +69,8 @@
 }
 
 .myuploader .drop-zone.dragover {
-    background-color: #e2e6ea;
-    border-color: #007bff;
+    background-color: #e2e6ea!important;
+    border-color: white;
 }
 
 .myuploader .drop-zone p {
