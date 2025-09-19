@@ -19,6 +19,8 @@ header("Expires: 0"); // Proxies.
 header("Content-Transfer-Encoding: binary");
 header("Date: ".gmdate('D, d M Y H:i:s', time()) . ' GMT');
 header('Content-Disposition: attachment; filename="'. rawurlencode($file['name']).'"');
+header("Content-Disposition: ".(isset($_GET['inline'])?"inline":"attachment").'; filename="'. rawurlencode($file['name']).'"');
+
 header("Content-Type: ".$file['type']);
 header("Content-Length: ".$file['size']);
 

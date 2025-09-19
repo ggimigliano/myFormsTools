@@ -669,20 +669,20 @@ protected $campoAutocomplete,$campi=array(),$accapo=array(null,null),$opzioni=ar
 
 	 	$div=new myTag('div');
 	 	$v=$div->parse_attributi_tag($attributi_td)	;
-	 	$v['style'].=";float:left;margin-right:1em";
+	 	$v['style'].=";display:inline-block;margin-right:1em";
 	 	$v['class']='myMultiElement';
 	 	$x=array();
 	 	foreach (array_keys($this->campi) as $nome)
 				 	{if(trim((string) $nome)==='') continue;
 				 	 if ($this->autotab) $this->campi[$nome]->set_autotab();
-				 	 $x[$riga][]=new myTag('div',$v,$this->get_html_singolo($nome,$noLabel));
+				 	 $x[$riga][]=new myTag('span',$v,$this->get_html_singolo($nome,$noLabel));
 				 	 if (++$i % $this->get_accapo()==0) $riga++;
 				 	}
 
 
 	 	$out="<div id=\"tbl_{$this->get_id()}\" >";
 	 	if (is_array($x)) foreach ($x as &$riga)  $out.=implode("",$riga);
-	 	$out.="<br style='clear:both' /></div>";
+	 	$out.="</div>";
 	 	 	/* 	Non più necessario ($this->attributi && isset($this->attributi['onclick']))?
 	 	                  $this->get_html_Accessibilita($this->attributi['onclick']):''; 
 	 	                  */

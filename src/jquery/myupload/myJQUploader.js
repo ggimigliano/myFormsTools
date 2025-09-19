@@ -254,21 +254,25 @@
 					                    const $fileList = $this.find(`#file-list-${settings.uploaderId}`);
 					                    $fileList.empty();
 					                    selectedFiles.forEach(file => {
-					                        const extension = file.name.split('.').pop().toLowerCase();
+					                        const extension = file.name.split('.').pop().toLowerCase().trim();
 					                        const iconUrl = settings.path+'MyUploadIcones/'+extension+'.gif';
 					                        
 					                        let fileUrl;
 					                        let fileDownload = false;
-
+											let forPreview="";
 					                        // Gestisce i file precaricati dal server
 					                        if (file.isServerFile) {
 					                            fileUrl = file.url;
 												fileDownload = true; // Imposta il flag per l'attributo 'download'
+												forPreview=` data-ext="${extension}"  data-filename="${fileUrl}${fileUrl.indexOf('?')!==-1?'&inline=1':'?inline=1'}"`; 
 					                        } else {
 					                            // Gestisce i file caricati dall'utente
 					                            fileUrl = URL.createObjectURL(file);
-					                        }
+												forPreview=` data-ext="${extension}"  data-filename="${fileUrl}"`; 
+											}
+											
 											let name=settings.fileInputName.replace(/\[\]$/, "");
+											
 					                        const rowHtml = `
 					                            <tr data-filename="${file.name}" class="ui-dialog-titlebar ui-state-default ">
 													<td class="myuploader file-actions" style="width:1.2em">
@@ -278,7 +282,7 @@
 													</td>
 													<td class="myuploader file-name ">
 														${fileDownload ?`<input type='hidden'  name='${name}[NODELETE][]' value='${file.hash}' />`:``}
-														<a href="${fileUrl}" target="_blank" title='Download' ${fileDownload ? 'download' : ''}>
+														<a href="${fileUrl}" ${forPreview}  target="_blank" title='Download' ${fileDownload ? 'download' : ''}>
 					                                    	<img src="${iconUrl}"   alt="${MESSAGES[currentLang].FILE_ICON_ALT} ${extension}" onerror="this.onerror=null; this.src='${settings.path}MyUploadIcones/default.gif'" style="height:1.7em;width:1.7em" />&nbsp;${file.name}
 														</a>
 					                                </td>

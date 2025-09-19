@@ -313,174 +313,128 @@ protected static $sessione,$maxGlobal;
 	 * @param boolean $effettiva se true restituisce quella trovata (anche null se non trovata), se true in caso di fallimento restituisce 'application/octet-stream'
 	 * @return string
 	 */	  
-	 public static function get_MimeType($ext,$effettiva=false) {
-	    $exts=self::get_MimeTypes();
-	    if($effettiva) return isset($exts[strtolower($ext)])?$exts[strtolower($ext)]:'';
-                  else return isset($exts[strtolower($ext)])?$exts[strtolower($ext)]:'application/octet-stream';
+	 public static function get_MimeTypeOf($ext,$effettiva=false) {
+	 	$ext = strtolower(trim(ltrim($ext, '.'))); // normalizza
+	 	$map = self::get_MimeTypes();
+	 	
+	 	foreach ($map as $mime => $extensions)
+	 		if (in_array($ext, $extensions, true)) return $mime;
+	 	
+	    if($effettiva) return null;
+                  else return 'application/octet-stream';
 	}	  
-		  
-	/**
-	 * Restituisce array con tutti i mimetype gestiti
-	 * 
-	 * @return string[]
-	 */	  
-	  public static function get_MimeTypes()
-		  {
-		      return array(
-		          'odp'   => 'application/vnd.oasis.opendocument.presentation',
-		          'odt'   => 'application/vnd.oasis.opendocument.text',
-		          'ods'   => 'application/vnd.oasis.opendocument.spreadsheet',
-		          'odb'   => 'application/vnd.oasis.opendocument.base',
-		          'hqx'   => 'application/mac-binhex40',
-		          'cpt'   => 'application/mac-compactpro',
-		          'csv'   => 'text/x-comma-separated-values',
-		          'bin'   => 'application/octet-stream',
-		          'dms'   => 'application/octet-stream',
-		          'lha'   => 'application/octet-stream',
-		          'lzh'   => 'application/octet-stream',
-		          'exe'   => 'application/octet-stream',
-		          'class' => 'application/octet-stream',
-		          'psd'   => 'application/x-photoshop',
-		          'so'    => 'application/octet-stream',
-		          'sea'   => 'application/octet-stream',
-		          'dll'   => 'application/octet-stream',
-		          'oda'   => 'application/oda',
-		          'ai'    => 'application/pdf',
-		          'pdf'   => 'application/pdf',
-		          'ps'    => 'application/postscript',
-		          'eps'   => 'application/postscript',
-		          'smi'   => 'application/smil',
-		          'smil'  => 'application/smil',
-		          'mif'   => 'application/vnd.mif',
-		          'xls'   => 'application/vnd.ms-excel',
-		          'ppt'   => 'application/powerpoint',
-		          'pptx'  => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-		          'wbxml' => 'application/wbxml',
-		          'wmlc'  => 'application/wmlc',
-		          'dcr'   => 'application/x-director',
-		          'dir'   => 'application/x-director',
-		          'dxr'   => 'application/x-director',
-		          'dvi'   => 'application/x-dvi',
-		          'gtar'  => 'application/x-gtar',
-		          'gz'    => 'application/x-gzip',
-		          'gzip'  => 'application/x-gzip',
-		          'php'   => 'application/x-httpd-php',
-		          'php4'  => 'application/x-httpd-php',
-		          'php3'  => 'application/x-httpd-php',
-		          'phtml' => 'application/x-httpd-php',
-		          'phps'  => 'application/x-httpd-php-source',
-		          'js'    => 'application/javascript',
-		          'swf'   => 'application/x-shockwave-flash',
-		          'sit'   => 'application/x-stuffit',
-		          'tar'   => 'application/x-tar',
-		          'tgz'   => 'application/x-tar',
-		          'z'     => 'application/x-compress',
-		          'xhtml' => 'application/xhtml+xml',
-		          'xht'   => 'application/xhtml+xml',
-		          'zip'   => 'application/x-zip',
-		          'rar'   => 'application/x-rar',
-		          'mid'   => 'audio/midi',
-		          'midi'  => 'audio/midi',
-		          'mpga'  => 'audio/mpeg',
-		          'mp2'   => 'audio/mpeg',
-		          'mp3'   => 'audio/mpeg',
-		          'aif'   => 'audio/x-aiff',
-		          'aiff'  => 'audio/x-aiff',
-		          'aifc'  => 'audio/x-aiff',
-		          'ram'   => 'audio/x-pn-realaudio',
-		          'rm'    => 'audio/x-pn-realaudio',
-		          'rpm'   => 'audio/x-pn-realaudio-plugin',
-		          'ra'    => 'audio/x-realaudio',
-		          'rv'    => 'video/vnd.rn-realvideo',
-		          'wav'   => 'audio/x-wav',
-		          'jpeg'  => 'image/jpeg',
-		          'jpe'   => 'image/jpeg',
-		          'jpg'   => 'image/jpeg',
-		          'png'   => 'image/png',
-		          'gif'   => 'image/gif',
-		          'bmp'   => 'image/bmp',
-		          'tiff'  => 'image/tiff',
-		          'tif'   => 'image/tiff',
-		          'svg'   => 'image/svg+xml',
-		          'css'   => 'text/css',
-		          'html'  => 'text/html',
-		          'htm'   => 'text/html',
-		          'shtml' => 'text/html',
-		          'txt'   => 'text/plain',
-		          'text'  => 'text/plain',
-		          'log'   => 'text/plain',
-		          'rtx'   => 'text/richtext',
-		          'rtf'   => 'text/rtf',
-		          'xml'   => 'application/xml',
-		          'xsl'   => 'application/xml',
-		          'mpeg'  => 'video/mpeg',
-		          'mpg'   => 'video/mpeg',
-		          'mpe'   => 'video/mpeg',
-		          'qt'    => 'video/quicktime',
-		          'mov'   => 'video/quicktime',
-		          'avi'   => 'video/x-msvideo',
-		          'movie' => 'video/x-sgi-movie',
-		          'doc'   => 'application/msword',
-		          'docx'  => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-		          'dot'   => 'application/msword',
-		          'xlsx'  => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-		          'word'  => 'application/msword',
-		          'xl'    => 'application/excel',
-		          'eml'   => 'message/rfc822',
-		          'json'  => 'application/json',
-		          'pem'   => 'application/x-x509-user-cert',
-		          'p10'   => 'application/x-pkcs10',
-		          'p12'   => 'application/x-pkcs12',
-		          'p7a'   => 'application/x-pkcs7-signature',
-		          'p7c'   => 'application/pkcs7-mime',
-		          'p7m'   => 'application/pkcs7-mime',
-		          'p7r'   => 'application/x-pkcs7-certreqresp',
-		          'p7s'   => 'application/pkcs7-signature',
-		          'crt'   => 'application/x-x509-ca-cert',
-		          'crl'   => 'application/pkix-crl',
-		          'der'   => 'application/x-x509-ca-cert',
-		          'kdb'   => 'application/octet-stream',
-		          'pgp'   => 'application/pgp',
-		          'gpg'   => 'application/gpg-keys',
-		          'sst'   => 'application/octet-stream',
-		          'csr'   => 'application/octet-stream',
-		          'rsa'   => 'application/x-pkcs7',
-		          'cer'   => 'application/pkix-cert',
-		          '3g2'   => 'video/3gpp2',
-		          '3gp'   => 'video/3gp',
-		          'mp4'   => 'video/mp4',
-		          'm4a'   => 'audio/x-m4a',
-		          'f4v'   => 'video/mp4',
-		          'webm'  => 'video/webm',
-		          'aac'   => 'audio/x-acc',
-		          'm4u'   => 'application/vnd.mpegurl',
-		          'm3u'   => 'text/plain',
-		          'xspf'  => 'application/xspf+xml',
-		          'vlc'   => 'application/videolan',
-		          'wmv'   => 'video/x-ms-wmv',
-		          'au'    => 'audio/x-au',
-		          'ac3'   => 'audio/ac3',
-		          'flac'  => 'audio/x-flac',
-		          'ogg'   => 'audio/ogg',
-		          'kmz'   => 'application/vnd.google-earth.kmz',
-		          'kml'   => 'application/vnd.google-earth.kml+xml',
-		          'ics'   => 'text/calendar',
-		          'zsh'   => 'text/x-scriptzsh',
-		          '7zip'  => 'application/x-7z-compressed',
-		          'cdr'   => 'application/cdr',
-		          'wma'   => 'audio/x-ms-wma',
-		          'jar'   => 'application/java-archive',
-		      );
-		  }	  
-	  
+	
+	public static function get_ExtOf(string $mimeType):array  {
+		$map = self::get_MimeTypes();
+		return $map[trim(strtolower($mimeType))] ?? [];
+	}
+	
+	public static function get_MimeTypes(): array {
+		return [
+				// Testo
+				'text/plain' => ['txt', 'text', 'conf', 'def', 'log', 'in', 'sql'],
+				'text/html' => ['html', 'htm'],
+				'text/css' => ['css'],
+				'text/csv' => ['csv'],
+				'text/xml' => ['xml'],
+				'text/javascript' => ['js', 'mjs'],
+				'text/markdown' => ['md', 'markdown'],
+				'text/x-php' => ['php', 'phtml', 'phps'],
+				'text/x-c' => ['c', 'h'],
+				'text/x-c++' => ['cpp', 'hpp', 'cc', 'cxx'],
+				'text/x-java-source' => ['java'],
+				'text/x-python' => ['py'],
+				
+				// Immagini
+				'image/jpeg' => ['jpeg', 'jpg', 'jpe'],
+				'image/png' => ['png'],
+				'image/gif' => ['gif'],
+				'image/bmp' => ['bmp'],
+				'image/webp' => ['webp'],
+				'image/svg+xml' => ['svg', 'svgz'],
+				'image/tiff' => ['tif', 'tiff'],
+				'image/x-icon' => ['ico'],
+				'image/heif' => ['heif', 'heic'],
+				'image/heif-sequence' => ['heifs', 'heics'],
+				'image/avif' => ['avif'],
+				'image/vnd.adobe.photoshop' => ['psd'],
+				
+				// Audio
+				'audio/midi' => ['mid', 'midi', 'kar'],
+				'audio/mpeg' => ['mp3', 'mpga', 'mp2'],
+				'audio/ogg' => ['ogg', 'oga', 'spx'],
+				'audio/wav' => ['wav'],
+				'audio/webm' => ['weba'],
+				'audio/aac' => ['aac'],
+				'audio/flac' => ['flac'],
+				'audio/3gpp' => ['3gp'],
+				'audio/3gpp2' => ['3g2'],
+				'audio/x-ms-wma' => ['wma'],
+				
+				// Video
+				'video/mp4' => ['mp4', 'mp4v', 'mpg4'],
+				'video/mpeg' => ['mpeg', 'mpg', 'mpe', 'm1v', 'm2v'],
+				'video/ogg' => ['ogv'],
+				'video/webm' => ['webm'],
+				'video/quicktime' => ['mov', 'qt'],
+				'video/x-msvideo' => ['avi'],
+				'video/x-ms-wmv' => ['wmv'],
+				'video/3gpp' => ['3gp'],
+				'video/3gpp2' => ['3g2'],
+				'video/x-flv' => ['flv'],
+				'video/x-matroska' => ['mkv'],
+				
+				// Applicazioni
+				'message/rfc822' => ['eml'],
+				'application/json' => ['json'],
+				'application/xml' => ['xml', 'xsl'],
+				'application/pdf' => ['pdf'],
+				'application/zip' => ['zip'],
+				'application/gzip' => ['gz'],
+				'application/x-bzip2' => ['bz2'],
+				'application/x-tar' => ['tar'],
+				'application/x-7z-compressed' => ['7z'],
+				'application/msword' => ['doc'],
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => ['docx'],
+				'application/vnd.ms-excel' => ['xls'],
+				'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => ['xlsx'],
+				'application/vnd.ms-powerpoint' => ['ppt'],
+				'application/vnd.openxmlformats-officedocument.presentationml.presentation' => ['pptx'],
+				'application/vnd.oasis.opendocument.text' => ['odt'],
+				'application/vnd.oasis.opendocument.spreadsheet' => ['ods'],
+				'application/vnd.oasis.opendocument.presentation' => ['odp'],
+				'application/x-httpd-php' => ['php', 'phtml'],
+				'application/x-sh' => ['sh'],
+				'application/x-csh' => ['csh'],
+				'application/java-archive' => ['jar'],
+				'application/x-rar-compressed' => ['rar'],
+				'application/octet-stream' => ['bin', 'exe', 'dll'],
+				'application/x-msdownload' => ['msi', 'msp', 'msm'],
+				'application/x-font-ttf' => ['ttf', 'ttc'],
+				'application/font-woff' => ['woff'],
+				'application/font-woff2' => ['woff2'],
+				'application/vnd.ms-opentype' => ['otf'],
+				'application/vnd.apple.installer+xml' => ['mpkg'],
+				'application/x-iso9660-image' => ['iso'],
+				'application/vnd.android.package-archive' => ['apk'],
+				'application/x-debian-package' => ['deb'],
+				'application/x-redhat-package-manager' => ['rpm'],
+				'application/x-sqlite3' => ['sqlite', 'db', 'sqlite3'],
+				'application/x-dvi' => ['dvi'],
+				'application/postscript' => ['ps', 'eps', 'ai'],
+				'application/x-latex' => ['latex'],
+				'application/x-hdf' => ['hdf'],
+				'application/x-shockwave-flash' => ['swf'],
+		];
+	}
+	
+	
       /**
        * Restutuisce le possibili estensioni del file
        * @param  string $body
        * @return array 
        */
 	 public static function deduci_ext_da_file(&$body){
-	    
-	    $mimes=static::get_MimeTypes();
 	    $ext='';$exts=array();
 	    $finfo='Finfo';
 	    if (class_exists($finfo,false)) {
@@ -496,9 +450,8 @@ protected static $sessione,$maxGlobal;
                         	         foreach (static::deduci_ext_da_file($v) as $ex) $exts[]="$ex.gz"; 
                         	         if($exts) return $exts;
                         	        }
-                    foreach ($mimes as $ex=>$mimes) if($mime==$mimes) $exts[]=$ex;
-                    if($exts) return $exts;
-        	        }
+                      foreach (static::get_MimeTypes() as $mim=>$ext) if($mime==$mim) return $ext;
+                    }
 	    }
 	  
 	    if (strpos(trim((string) $body),"%PDF-")===0 &&  strrpos($body,'%%EOF')>strlen($body)-10) return array('pdf');
@@ -519,7 +472,8 @@ protected static $sessione,$maxGlobal;
 	    file_put_contents($tmp, $body);
 	    
 	    $ext='';
-	    if (strpos($body,'PK')===0 ){
+	    if (strpos($body,'PK')===0 )
+	    	{
 	        if(!is_callable('zip_open')) {
 	                if(strpos($body,'word/settings.xml')!==false &&
             	       strpos($body,'word/fontTable.xml')!==false &&
@@ -527,7 +481,7 @@ protected static $sessione,$maxGlobal;
             	       strpos($body,'word/document.xml')!==false ) $ext='docx';
             	    if(strpos($body,'xl/workbook.xml')!==false &&
             	       strpos($body,'xl/styles.xml')!==false ) $ext='xlsx';
-        	       }
+        	        }
         	    else{
 	                $zip = zip_open($tmp);
     	    		if ($zip && !is_numeric($zip)) 
@@ -537,9 +491,7 @@ protected static $sessione,$maxGlobal;
             		                  if (zip_entry_name($zip_entry)== "mimetype") 
             		                                      {
             		                                         $mimefile=zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
-            		                                         $exts=array();
-                                                             foreach ($mimes as $ex=>$mime) if($mime==$mimefile) $exts[]=$ex;
-                                                             if($exts) return $exts;
+            		                                         foreach (static::get_MimeTypes() as $mime=>$ex) if($mime==$mimefile) return $ex;
                                                           }
             		                  if (zip_entry_name($zip_entry)== "[Content_Types].xml")
             		                                  {$info=simplexml_load_string(zip_entry_read($zip_entry, zip_entry_filesize($zip_entry)));
@@ -569,9 +521,9 @@ protected static $sessione,$maxGlobal;
         if(!$ext) {
                     $size = @getimagesize($tmp);
                     if(is_array($size)) 
-                            {$exts=array();
-                             foreach ($mimes as $ex=>$mime) if($mime==$size['mime']) $exts[]=$ex;
-                             if($exts) return $exts;
+                            {
+                             foreach (static::get_MimeTypes() as $mime=>$ex) if($mime==$size['mime']) return $ex;
+                           
                             }
                    }
         if (!$ext && bin2hex(substr($body,0,2)) == '1f8b' && ($v=@gzuncompress($body))) 
