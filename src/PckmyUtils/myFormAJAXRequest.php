@@ -17,7 +17,7 @@ use Gimi\myFormsTools\PckmyJQuery\Pckgeneric\myJQDialog;
 /** @ignore*/
 	
 class myFormAJAXRequest extends myJQDialog {
-    protected $attesa="",$azioni=array(),$JQvars=array();
+	protected $attesa="",$azioni=array(),$JQvars=array(),$onBeforeSubmit="function(){return true} ";
     /**
      * @see http://www.chimply.com/Generator#classic-spinner
      * @param string $html
@@ -72,7 +72,13 @@ class myFormAJAXRequest extends myJQDialog {
     }
     
     
-     
+    /**
+     *  @param string $options funzione JS ch riceve in input il form se ristitusce false il submit fallisce altrimenti prosegue
+     */
+    public function set_onBeforeSubmit($fun){
+    	$this->onBeforeSubmit=$fun;
+    	return $this;
+    }
     
     public function prepara_codice(){
     	 
@@ -106,13 +112,17 @@ class myFormAJAXRequest extends myJQDialog {
                           if(".self::get_disable_varname().") return;
                        } catch(ee) {}
                      try{  
-                          if({$id}_start) return false;
-                          {$id}_start=true;
+                          if({$id}_start) return false; 
+						  var theForm = {$this->JQvar()}(this);
+						  
+						  if( !({$this->onBeforeSubmit})( theForm )) return false;
+                          {$id}_start=true;  
+						  
                           {$this->myJQVarName()}.get(0).innerHTML=\"{$this->html}\";
                           {$this->myJQVarName()}.dialog('option','title',\"{$this->trasl('Attendere')}\");
                           {$this->JQvar()}('div[aria-describedby={$id}] .ui-dialog-titlebar button').css({'display':'none'});
                           {$this->get_js_show()};
-                          var theForm = {$this->JQvar()}(this);
+                        
                           var ajax={
                                      type: {$this->JQvar()}(this).attr('method'),
                                      url:  {$this->JQvar()}(this).attr('action'),

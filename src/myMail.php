@@ -7,6 +7,7 @@ namespace Gimi\myFormsTools;
 
 
 use Gimi\myFormsTools\PckmyFields\myField;
+include_once __DIR__.'/../thrd/phpmailer/src/PHPMailer.php';
 
 
 
@@ -15,10 +16,11 @@ use Gimi\myFormsTools\PckmyFields\myField;
  *  
  */
 	
-class myMail extends \PHPMailer {
+class myMail extends PHPMailer\PHPMailer\PHPMailer {
 /**
  * @ignore
  */
+	protected static  $nEmbedded;
 	public $LastId,	$NEmbedded=array(),$FEmbedded=array(),
      $Priority          = 3, //Email priority (1 = High, 3 = Normal, 5 = low).
      $CharSet           = "iso-8859-1",
@@ -57,21 +59,7 @@ class myMail extends \PHPMailer {
      * @return void
      */
 	 public function __construct($nome_mittente,$email_mittente,$email_destinatari,$oggetto='',$testo='',$allegati=array()){
-		static $NEmbedded;
-		$this->NEmbedded=&$NEmbedded;
-		$this->SERVER['SERVER_ADDR']=(isset($_SERVER['SERVER_ADDR'])?$_SERVER['SERVER_ADDR']:(isset($_SERVER['LOCAL_ADDR'])?$_SERVER['LOCAL_ADDR']:null));
-        $this->SERVER['REQUEST_URI']=$_SERVER['REQUEST_URI'];
-        $this->SERVER['SERVER_NAME']=$_SERVER['SERVER_NAME'];
-        $this->SERVER['DOCUMENT_ROOT']=$_SERVER['DOCUMENT_ROOT'];
-        $this->SERVER['HTTP_HOST']=$_SERVER['HTTP_HOST'];
-        
-		$this->Priority =1;
-		$this->PluginDir=dirname(__FILE__)."/phpmailer/";
-		
-		$f=new MyField();
-		if($f->get_dizionario()) $lang=strtolower($f->get_dizionario()->get_al());
-		                    else $lang='it';
-		$this->SetLanguage($lang,"{$this->PluginDir}language/");
+		$this->init();
 
 
 		$this->FromName =$nome_mittente;
@@ -96,6 +84,25 @@ class myMail extends \PHPMailer {
 		$this->IsSMTP();
 		if($oggetto!=='') $this->Subject=	$oggetto;
 		if($testo!=='')   $this->Set_Testo($testo);
+	}
+	
+	
+	public function init() {
+		$this->Priority =1;
+		$this->PluginDir=dirname(__FILE__)."/thrd/phpmailer/";
+		include_once($this->PluginDir.'class.phpmailer.php');
+		
+		$this->NEmbedded=&self::$nEmbedded;
+		$this->SERVER['SERVER_ADDR']=(isset($_SERVER['SERVER_ADDR'])?$_SERVER['SERVER_ADDR']:(isset($_SERVER['LOCAL_ADDR'])?$_SERVER['LOCAL_ADDR']:null));
+		$this->SERVER['REQUEST_URI']=$_SERVER['REQUEST_URI'];
+		$this->SERVER['SERVER_NAME']=$_SERVER['SERVER_NAME'];
+		$this->SERVER['DOCUMENT_ROOT']=$_SERVER['DOCUMENT_ROOT'];
+		$this->SERVER['HTTP_HOST']=$_SERVER['HTTP_HOST'];
+		
+		$f=new MyField();
+		if($f->get_dizionario()) $lang=strtolower($f->get_dizionario()->get_al());
+		else $lang='it';
+		$this->SetLanguage($lang,"{$this->PluginDir}language/");
 	}
 
 	/**
@@ -137,8 +144,9 @@ class myMail extends \PHPMailer {
      * @param string $testo   Testo della mail, eventualmente in html (completo di tag body)
      * @return void
      */
-	 public function set_Testo($html){
-	    if(strip_tags($html)==$html) {$this->IsHTML(false);$this->Body=$html;} 
+	public function set_Testo($html){ 
+	    if(strip_tags($html)==$html) 
+	    				  {$this->IsHTML(false);$this->Body=$html;} 
 	                 else { if(stripos($html,'<body')===false) $html='<html><head></head><body>'.$html.'</body></html>';
 	                                   elseif(stripos($html,'<head')===false) $html=str_ireplace('<body', '<head></head><body', $html);
 	                        if(!preg_match('@<meta[^>]+Content-Type[^>]+>@Ui',$html)) $html=str_ireplace('</head', '<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /></head', $html);
@@ -202,38 +210,6 @@ class myMail extends \PHPMailer {
      * @return void
      */
 	 public function AddAttachment($path, $name = "",$null1=null,$null2=null,$null3=null){return parent::AddAttachment($path,$name,"base64", $this->mime_content_type($path));}
-
-    /**
-     * Aggiunge un destinatario
-     * @param string $address  indirizzo email
-     * @param string $name     Eventuale nome descrittivo associato alla mail
-     * @return void
-     */
-     public function AddAddress($address, $name = "") { return parent::AddAddress($address, $name);   }
-
-    /**
-     * Aggiunge un destinatario in conoscenza "Cc"
-     * @param string $address  indirizzo email
-     * @param string $name     Eventuale nome descrittivo associato alla mail
-     * @return void
-    */
-     public function AddCC($address, $name = "") {parent::AddCC($address, $name);}
-
-    /**
-     * Aggiunge un destinatario in conoscenza nascosta "Ccn"
-     * @param string $address  indirizzo email
-     * @param string $name     Eventuale nome descrittivo associato alla mail
-     * @return void
-    */
-     public function AddCCn($address, $name = "") { $this->AddBCC($address, $name);	  }
-
-    /**
-     * Aggiunge un destinatario a cui i rispondere
-     * @param string $address  indirizzo email
-     * @param string $name     Eventuale nome descrittivo associato alla mail
-     * @return void
-     */
-     public function AddReplyTo($address, $name = "") { parent::AddReplyTo($address, $name);}
 
     /**
      * @ignore

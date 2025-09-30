@@ -14,7 +14,7 @@ use Gimi\myFormsTools\myMail;
 	
 class myMultiParter extends myMail {
 /** @ignore */
-	public $Id,$mime_types,$LE              = "\r\n";
+	public $Id,$mime_types              = "\r\n";
 
 	
 
@@ -22,6 +22,7 @@ class myMultiParter extends myMail {
   public function __construct($id=''){
  		if(!$id) $id= md5(uniqid(time()));
 		$this->Id =$id;
+		$this->init();
 	}
 
 
@@ -59,7 +60,7 @@ class myMultiParter extends myMail {
       			 	if($this->attachment[$this->start][4]) $result.="; type=\"{$this->attachment[0][4]}\"";
        				if($this->attachment[$this->start][7]) $result.="; start=\"<{$this->attachment[0][7]}>\"";
        				}
-       return $result.$this->LE.$this->LE;
+       return $result.self::$LE.self::$LE;
     }
 
 
@@ -87,21 +88,21 @@ class myMultiParter extends myMail {
         #    $disposition = $this->attachment[$i][6];
             $cid         = $this->attachment[$i][7];
 
-            $mime[] = sprintf("--%s%s", $this->boundary[1], $this->LE);
-            if($cid) $mime[] = sprintf("Content-ID: <%s>%s",  $cid, $this->LE);
-            	else $mime[] = sprintf("Content-Location: file:///%s%s",$filename, $this->LE);
-            $mime[] = sprintf("Content-Transfer-Encoding: %s%s", $encoding, $this->LE);
-         	$mime[] = sprintf("Content-Type: %s%s", $type,  $this->LE);
+            $mime[] = sprintf("--%s%s", $this->boundary[1], self::$LE);
+            if($cid) $mime[] = sprintf("Content-ID: <%s>%s",  $cid, self::$LE);
+            	else $mime[] = sprintf("Content-Location: file:///%s%s",$filename, self::$LE);
+            $mime[] = sprintf("Content-Transfer-Encoding: %s%s", $encoding, self::$LE);
+         	$mime[] = sprintf("Content-Type: %s%s", $type,  self::$LE);
 
             // Encode as string attachment
-         	$mime[] = $this->LE;
+         	$mime[] = self::$LE;
             $mime[] = $this->EncodeString($string, $encoding);
-            $mime[] = $this->LE.$this->LE;
+            $mime[] = self::$LE.self::$LE;
 
 
         }
 
-        $mime[] = sprintf("--%s--%s", $this->boundary[1], $this->LE);
+        $mime[] = sprintf("--%s--%s", $this->boundary[1], self::$LE);
 
         return join("", $mime);
     }
