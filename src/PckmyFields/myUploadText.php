@@ -166,6 +166,8 @@ protected static $sessione,$maxGlobal;
 		  */
 		  protected function get_errore_diviso_singolo() {
 		      if(isset($this->file[$this->curFile]['reloaded'])) return;
+		      
+		      
 		      if(isset($_POST[$this->get_remove_check()->get_name()]))
 		  					{ 
 		  					  if($this->notnull)   return ' non può essere nullo';
@@ -174,11 +176,16 @@ protected static $sessione,$maxGlobal;
 		  					  return;
 		  					}
 		  	   
-				  	    if (isset($this->myFields['FILES'][$this->get_name().'_file']['name'])) 
+			  if (isset($this->myFields['FILES'][$this->get_name().'_file']['name'])) 
 				  	   							  $this->file[$this->curFile]=$this->myFields['FILES'][$this->get_name().'_file'];
-				  	   						
-				  	    if (!isset($this->file[$this->curFile]) && $this->get_value()) return;
-				  	    if (isset($this->file[$this->curFile]['error']) && 
+				  	   					
+				  	   							  					  
+			  if ((!isset($this->file[$this->curFile]) || $this->file[$this->curFile]['error']==4)  && $this->get_value()) 
+				  	   							  		{
+				  	   							  			$this->set_value($this->get_value());
+				  	   							  			return;
+				  	   							  		}
+			  if (isset($this->file[$this->curFile]['error']) && 
 				  	              $this->file[$this->curFile]['error']>=1 &&
 						  		  $this->file[$this->curFile]['error']<=2)  {/*$this->remove_session();*/ return array(' non può essere più grande di %1%bytes',self::ricalcolasize($this->maxlength,true,1));}
 						 elseif (isset($this->file[$this->curFile]['error']) && 
@@ -211,8 +218,10 @@ protected static $sessione,$maxGlobal;
 			   
 			 public function set_value($valore,$forza=false) {
 		       if(!$forza && strlen($valore)>0 && preg_match('@^[a-zA-Z0-9/+]+[=]{0,2}$@', $valore)) 
-		                                      {$valori=@unserialize(@gzuncompress(@base64_decode($valore)));
-		                                       if($valori){$this->bodyFile=&$valori['val'];
+		      								 {
+		                                       $valori=@unserialize(@gzuncompress(@base64_decode($valore)));
+		                                       if($valori && isset($valori['ext']) && $valori['ext'])
+		                                       			  {$this->bodyFile=&$valori['val'];
                 		                                   $this->ext=&$valori['ext'];
                 		                                   $this->file[$this->curFile]=array('reloaded'=>true);       
                 		                                   return $this;
@@ -710,7 +719,7 @@ protected static $sessione,$maxGlobal;
 		return $this->jsAutotab().$this->send_html("$nofile
                                     				<div id='upl_div_{$this->get_id()}' style='display:inline'>$icona
                                         				<span>
-                                        					 <input type='hidden'  {$this->stringa_attributi(array('id','type','title','value'),1)} value=\"".base64_encode(gzcompress($this->bodyFile,8))."\">
+                                        					 <input type='hidden'  {$this->stringa_attributi(array('id','type','title','value'),1)} value=\"".base64_encode(gzcompress(serialize(['val'=>&$this->bodyFile,'ext'=>$this->ext]),8))."\">
                                         					 <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".self::$maxGlobal."\" />
                                         					 <input name=\"{$name}\" oninput=\"document.getElementById('_{$this->get_id()}').value=''\" ".$this->stringa_attributi(array('value','name'),1)." />".($this->show_info[1]?"(max&nbsp;".self::ricalcolasize($this->get_max(),true,1)."bytes)":'')."
                                         				</span>
@@ -751,7 +760,7 @@ protected static $sessione,$maxGlobal;
 				  }
 	
 			return "<div id='upl_div_{$this->get_id()}' style='display:inline'>$icona
-                                        					<input type='hidden'  {$this->stringa_attributi(array('id','type','title','value'),1)} value=\"".base64_encode(gzcompress($this->bodyFile,8))."\">
+                                        					<input type='hidden'  {$this->stringa_attributi(array('id','type','title','value'),1)} value=\"".base64_encode(gzcompress(serialize(array('val'=>&$this->bodyFile,'ext'=>$this->ext)),8))."\">
                                         			</div>";
 		}
 	

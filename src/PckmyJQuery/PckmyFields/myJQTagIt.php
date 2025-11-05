@@ -6,6 +6,7 @@
 namespace Gimi\myFormsTools\PckmyJQuery\PckmyFields;
 
 
+use Gimi\myFormsTools\myCSS;
 use Gimi\myFormsTools\PckmyJQuery\myJQueryMyField;
                                                 
 
@@ -33,7 +34,81 @@ class myJQTagIt extends myJQueryMyField {
         $this->beforeTagAdded  ="function( val) {
                                                 return (".self::encode_array($vals,'[]',false).").includes(val);
                                             }";
+        
+       
+        
         return $this;
+    }
+    
+    
+    /** @ignore */
+    final function set_common_defaults(array $defaults){
+     	$this->add_common_code(myCSS::get_css_jscode(" .ui-draggable-dragging {
+													            z-index: 1000;
+													            background-color: #f0f0f0;
+													            opacity: 0.8;
+													            border: 1px dashed #333;
+													        }
+													.tagit-choice:hover {  cursor: move; }",true));
+    }
+    /**
+     * @ignore
+     */
+    public function get_html(){
+    	if(!isset($this->afterTagAdded))	$this->afterTagAdded=" function(event, ui) {
+											        	
+											        		makeTagDraggable($(ui.tag));
+											        	
+											       }";
+    								 else  $this->afterTagAdded=" function(event, ui) {
+														({$this->afterTagAdded})(event, ui);
+											        	 makeTagDraggable($(ui.tag));
+											       }";
+    					 
+    	$this->add_code("$('.tagit').droppable(
+									{
+						            accept: '.tagit-choice',
+						            tolerance: \"pointer\",
+						            drop: function(event, ui) {
+										 
+						                var droppedTag = ui.draggable;
+						                var tagText = droppedTag.data('tag-text');
+						                var originalListId = droppedTag.data('original-list');
+						                var targetListId = $(this).closest('.tagit').parent().find('.tagit-hidden-field').attr('id');		 
+						               
+										 if (originalListId === targetListId)    return; 
+										
+						                // Aggiungi il tag al nuovo contenitore (triggera afterTagAdded, che lo rende draggable)
+						                $('#' + targetListId).tagit('createTag', tagText);
+						                
+						                // Rimuovi il tag dal contenitore originale
+						                setTimeout(function() { 
+										   		$('#' + originalListId).parent().find('.tagit-label').each(function() {
+												if ($(this).text() === tagText) {
+													                            $('#' + originalListId).tagit('removeTagByLabel', tagText);
+													                            return false; 
+													                        }
+						                    					});
+						                	}, 50);
+						            }
+						        });
+						    ");
+    	return parent::get_html()."<script>
+										 function makeTagDraggable(tagElement) {
+													
+										            tagElement.draggable({
+										                cursor: 'move',
+										                revert: 'invalid',
+										                helper: 'clone',
+										                opacity: 0.7,
+										                start: function(event, ui) {
+														    $(this).data('tag-text', $(this).find('.tagit-label').text());
+										                    $(this).data('original-list', $(this).closest('.tagit').parent().find('.tagit-hidden-field').attr('id'));
+														 
+										                }
+										            });
+										        }
+										</script>";
     }
 
      public function set_istance_defaults(){
