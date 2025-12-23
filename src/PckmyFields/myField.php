@@ -38,16 +38,17 @@ public $Richiede_tag_label=true, $Prevede_label=true,$con_js=true,$usaDIV=false,
 
 /**
  * @ignore
- */ public function offsetSet($offset, $value) {
- 		if (!$offset)  return $this->set_value($value);
- 				  else return $this->set_attributo($offset, $value);
+ */ public function  offsetSet(mixed $offset, mixed $value): void  {
+ 		if (!$offset)   $this->set_value($value);
+ 				  else  $this->set_attributo($offset, $value);
     }
 
 /**
  * @ignore
- */public function offsetGet($offset) {
+ */public function  offsetGet(mixed $offset): mixed  {
 	  	if (!$offset)  return $this->get_value();
- 				  else return $this->attributi[$offset];
+	  			elseif(isset($this->attributi[$offset])) return $this->attributi[$offset];
+	  	return null;
     }
     
     static function &changeCase(&$val,$case='l') {

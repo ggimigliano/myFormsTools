@@ -53,19 +53,19 @@ protected $secure,$attributi=array(),$javascript='',$tagName='',$contenuto=null,
 
 /**
  * @ignore
- */public function offsetSet($offset, $value) {	$this->set_attributo($value,$offset);   }
+ */public function offsetSet(mixed $offset, mixed $value): void  {	$this->set_attributo($value,$offset);   }
 
 /**
  * @ignore
- */public function offsetExists($offset) {  return $this->attributi[$offset]!='';   }
+ */public function offsetExists(mixed $offset): bool {  return isset($this->attributi[$offset]) && $this->attributi[$offset]!='';   }
 
 /**
  * @ignore
- */public function offsetUnset($offset) { 	$this->unset_attributo($offset);   }
+ */public function offsetUnset(mixed $offset): void { 	$this->unset_attributo($offset);   }
     
 /**
  * @ignore
- */ public function offsetGet($offset) { return $this->attributi[$offset];   }
+ */ public function offsetGet(mixed $offset): mixed { return isset($this->attributi[$offset]) ? $this->attributi[$offset]:'';   }
 
 /**
  * @ignore

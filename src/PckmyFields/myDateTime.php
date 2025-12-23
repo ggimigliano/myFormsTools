@@ -87,7 +87,7 @@ class myDateTime extends myText	{
    */
    public function get_parte($quale,$oggetto=false) {
   	$v=explode(' ',$this->get_value());
-  	if (!$oggetto) return $v[$quale];
+  	if (!$oggetto) return ISSET($v[$quale])?$v[$quale]:null;
   	if ($quale==0) return (new myDate(''))->set_value($v[0]);
   	     elseif(count($v)>=2) return (new myTime(''))->set_value($v[1]);
   }
