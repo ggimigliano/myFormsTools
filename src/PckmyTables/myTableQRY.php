@@ -186,7 +186,8 @@ protected   $conn,$sessione;
     	   
     	    $parsed=new PHPSQLParser($q);
     	    $select=$parsed->parsed['SELECT'];
-    	    self::scan_parsed($parsed->parsed,function($k,$v){if($k==='WHERE') return (new PHPSQLParser("select 1 from dual where 1=0"))->parsed['WHERE'];  else return $v;});
+    	    self::scan_parsed($parsed->parsed,
+    	    					function($k,$v){if($k==='WHERE') return (new PHPSQLParser("select 1 from dual where 1=0"))->parsed['WHERE'];  else return $v;});
     	    if(!isset($parsed->parsed['WHERE'])) $parsed->parsed['WHERE']=(new PHPSQLParser("select 1 from dual where 1=0"))->parsed['WHERE'];
     	    $select=$parsed->parsed;
     	    return  (new SelectStatementBuilder())->build($parsed->parsed);

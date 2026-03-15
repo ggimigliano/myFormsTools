@@ -50,25 +50,28 @@ use PHPSQLParser\exceptions\UnableToCreateSQLException;
  * @license http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
  *  
  */
-class UpdateBuilder implements Builder {
+class UpdateBuilder extends  SelectBuilder {
 
-    protected function buildTable($parsed, $idx) {
-        $builder = new TableBuilder();
-        return $builder->build($parsed, $idx);
-    }
+    
 
     public function build(array $parsed) {
-        $sql = '';
-
-        foreach ($parsed as $k => $v) {
-            $len = strlen($sql);
-            $sql .= $this->buildTable($v, $k);
-
-            if ($len == strlen($sql)) {
-                throw new UnableToCreateSQLException('UPDATE table list', $k, $v, 'expr_type');
-            }
-        }
-        return 'UPDATE ' . $sql;
+    	$sql = "";
+    	foreach ($parsed as $k => $v) {
+    		$len = strlen($sql);
+    		$sql .= $this->buildColRef($v);
+    		$sql .= $this->buildSelectBracketExpression($v);
+    		$sql .= $this->buildSelectExpression($v);
+    		$sql .= $this->buildFunction($v);
+    		$sql .= $this->buildConstant($v);
+    		$sql .= $this->buildReserved($v);
+    		$sql .= $this->buildComment($v);
+    		if ($len == strlen($sql)) {
+    			throw new UnableToCreateSQLException('UPDATE', $k, $v, 'expr_type');
+    		}
+    		
+    		$sql .= $this->getDelimiter($v);
+    	}
+    	return "UPDATE " . $sql;
     }
 }
 ?>

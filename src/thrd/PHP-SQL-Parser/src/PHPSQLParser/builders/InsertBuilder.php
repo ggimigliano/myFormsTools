@@ -85,8 +85,8 @@ class InsertBuilder implements Builder {
             $sql .= $this->buildSubQuery($v);
             $sql .= $this->buildColumnList($v);
             $sql .= $this->buildReserved($v);
-            $sql .= $this->buildBracketExpression($v);
-
+            $sql .= $this->buildBracketExpression($v); 
+            
             if ($len == strlen($sql)) {
                 throw new UnableToCreateSQLException('INSERT', $k, $v, 'expr_type');
             }

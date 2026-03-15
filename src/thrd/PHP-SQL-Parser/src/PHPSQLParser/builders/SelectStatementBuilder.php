@@ -56,6 +56,11 @@ class SelectStatementBuilder implements Builder {
         return $builder->build($parsed);
     }
 
+    protected function buildUPDATE($parsed) {
+    	$builder = new UpdateBuilder();
+    	return $builder->build($parsed);
+    }
+    
     protected function buildFROM($parsed) {
         $builder = new FromBuilder();
         return $builder->build($parsed);
@@ -69,6 +74,11 @@ class SelectStatementBuilder implements Builder {
     protected function buildGROUP($parsed) {
         $builder = new GroupByBuilder();
         return $builder->build($parsed);
+    }
+    
+    protected function buildINSERT($parsed) {
+    	$builder = new InsertBuilder();
+    	return $builder->build($parsed);
     }
 
     protected function buildHAVING($parsed) {
@@ -99,7 +109,10 @@ class SelectStatementBuilder implements Builder {
     public function build(array $parsed) {
         $sql = "";
         if (isset($parsed['SELECT'])) {
-            $sql .= $this->buildSELECT($parsed['SELECT']);
+            $sql = $this->buildSELECT($parsed['SELECT']);
+        }
+        if (isset($parsed['UPDATE'])) {
+        	$sql =  $this->buildUPDATE($parsed['UPDATE']);
         }
         if (isset($parsed['FROM'])) {
             $sql .= " " . $this->buildFROM($parsed['FROM']);
@@ -125,6 +138,10 @@ class SelectStatementBuilder implements Builder {
         if (isset($parsed['UNION ALL'])) {
         	$sql .= " " . $this->buildUNIONALL($parsed);
         }
+        if (isset($parsed['INSERT'])) {
+        	$sql =$this->buildINSERT($parsed);
+        }
+       
         return $sql;
     }
 
