@@ -7,7 +7,7 @@ namespace Gimi\myFormsTools;
 
 
 use Gimi\myFormsTools\PckmyFields\myField;
-include_once __DIR__.'/../thrd/phpmailer/src/PHPMailer.php';
+include_once __DIR__.'/thrd/phpmailer/src/PHPMailer.php';
 
 
 
@@ -16,7 +16,7 @@ include_once __DIR__.'/../thrd/phpmailer/src/PHPMailer.php';
  *  
  */
 	
-class myMail extends PHPMailer\PHPMailer\PHPMailer {
+class myMail extends \PHPMailer\PHPMailer\PHPMailer {
 /**
  * @ignore
  */
@@ -89,8 +89,7 @@ class myMail extends PHPMailer\PHPMailer\PHPMailer {
 	
 	public function init() {
 		$this->Priority =1;
-		$this->PluginDir=dirname(__FILE__)."/thrd/phpmailer/";
-		include_once($this->PluginDir.'class.phpmailer.php');
+		$this->PluginDir=__DIR__."/thrd/phpmailer/"; 
 		
 		$this->NEmbedded=&self::$nEmbedded;
 		$this->SERVER['SERVER_ADDR']=(isset($_SERVER['SERVER_ADDR'])?$_SERVER['SERVER_ADDR']:(isset($_SERVER['LOCAL_ADDR'])?$_SERVER['LOCAL_ADDR']:null));

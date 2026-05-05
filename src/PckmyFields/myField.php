@@ -296,7 +296,9 @@ public $Richiede_tag_label=true, $Prevede_label=true,$con_js=true,$usaDIV=false,
   
   
    public function get_dizionario() {
-      return array_shift($this->get_dizionari());
+   	  $dizionari=$this->get_dizionari();
+   	  if(!$dizionari) return null;
+   	  return array_shift($dizionari);
   }
   		
   

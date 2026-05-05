@@ -20,7 +20,7 @@
  */
 
 namespace PHPMailer\PHPMailer;
-
+ 
 /**
  * PHPMailer - PHP email creation and transport class.
  *
@@ -1109,7 +1109,7 @@ class PHPMailer
             $this->setError($error_message);
             $this->edebug($error_message);
             if ($this->exceptions) {
-                throw new Exception($error_message);
+                throw new \Exception($error_message);
             }
 
             return false;
