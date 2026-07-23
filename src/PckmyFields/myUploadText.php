@@ -219,6 +219,7 @@ protected static $sessione,$maxGlobal;
 		       if(!$forza && strlen($valore)>0 && preg_match('@^[a-zA-Z0-9/+]+[=]{0,2}$@', $valore)) 
 		      								 {
 		                                       $valori=@unserialize(@gzuncompress(@base64_decode($valore)));
+		                                       $valore='';
 		                                       if($valori &&  ($valori['ext'] ||  $valori['name']))
 		                                       			  {$this->bodyFile=&$valori['val'];
 		                                       			   if( $valori['name'])
