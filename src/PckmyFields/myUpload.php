@@ -106,9 +106,15 @@ protected $NODELETE=array(),$path,$ext_ammesse=array(),$nomeAttuale=array(), $da
         	 * funziona solo se il file è stato correttamente appena uploadato e se prima e' stato fatto myforms::check_errore() o myUpload::errore()
         	 * @return myArrayObject @see myArrayObject
         	 */
-        	public function get_info_uploaded(){
-        		return  new myArrayObject($this->file);
+        	 
+        	public function get_info_uploaded($prop=null){
+        		if($this->is_multiplo()) $file=isset($this->file[0])?$this->file[0]:array();
+        							else $file=$this->file;
+        		
+        		if($prop!==null && isset($file[$prop])) return $file[$prop];
+        		return  new myArrayObject($file);
         	}
+        	
         	
 
         	/**
