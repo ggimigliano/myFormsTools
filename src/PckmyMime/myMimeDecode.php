@@ -127,9 +127,9 @@ class myMimeDecode{
 	    				if($files) {
 	    					$out['header']=&$files->headers;
 	    					$out['body']=$this->cerca_body($files);
-	    					if($files && $files->parts)
-	    						foreach ( $files->parts as &$parte)   if(isset($parte->disposition)) $out['attach'][]=$parte;
-	    				}
+	    					if(isset($files->parts))
+	    							foreach ( $files->parts as &$parte)   if(isset($parte->disposition)) $out['attach'][]=$parte;
+	    					}
 	    				return $out;
 	    }
 	
