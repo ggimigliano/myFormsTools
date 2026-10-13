@@ -10,7 +10,7 @@ use Gimi\myFormsTools\PckmyFields\myUploadText;
 error_reporting(0);
 $file=@unserialize(myUploadText::ppnDecrypt(isset($_GET['file'])?$_GET['file']:''));
 if(!$file) exit; 
-if(isset($file['fromPOST']) && isset($_POST[$file['fromPOST']])) $f=@gzuncompress(@base64_decode($_POST[$file['fromPOST']])); 
+if(isset($file['fromPOST']) && isset($_POST[$file['fromPOST']])) $f=@unserialize(@gzuncompress(@base64_decode($_POST[$file['fromPOST']]))); 
 
 
 header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
@@ -24,6 +24,6 @@ header("Content-Disposition: ".(isset($_GET['inline'])?"inline":"attachment").';
 header("Content-Type: ".$file['type']);
 header("Content-Length: ".$file['size']);
 
-if($f) die($f);
+if($f) die($f['val']);
   else readfile($file['tmp_name']);
 ?>
